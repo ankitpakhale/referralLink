@@ -21,7 +21,7 @@ class CasignUp(models.Model):
 
     def save(self,*args,**kwargs):
         code=genrated_ref_code()
-        self.link="http://127.0.0.1:8000/"+str(code)
+        self.link="http://127.0.0.1:8000/prsignup/"+str(code)
         super().save(*args,**kwargs)    
 
 
@@ -39,8 +39,7 @@ class PrsignUp(models.Model):
     def __str__(self):
         return self.name
 
-
     def save(self,*args,**kwargs):
         code=genrated_ref_code()
-        self.link="http://127.0.0.1:8000/"+str(code)
+        self.link="http://127.0.0.1:8000/prsignup/"+str(code)
         super().save(*args,**kwargs)         

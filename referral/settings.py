@@ -55,7 +55,7 @@ ROOT_URLCONF = 'referral.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['/home/user5/Documents/ank10/project1/referral/CA/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

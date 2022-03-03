@@ -131,9 +131,9 @@ def prSignupView(self,ref_code):
                 v.password = Password
                 v.confirmPassword = ConfirmPassword
                 try:
-                        d=CasignUp.objects.get(link="http://127.0.0.1:8000/"+ref_code)
+                        d=CasignUp.objects.get(link="http://127.0.0.1:8000/prsignup/"+ref_code)
                 except:
-                        d=PrsignUp.objects.get(link="http://127.0.0.1:8000/"+ref_code)
+                        d=PrsignUp.objects.get(link="http://127.0.0.1:8000/prsignup/"+ref_code)
 
                 print(d.id)
                 v.recommend_by=d.name
