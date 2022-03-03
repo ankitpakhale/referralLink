@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>promoter Main dashboard</title>
+</head>
+
+<body>
+    {% if key %}
+    <a href="{% url 'PRLOGOUT' %}" class="nav-item nav-link" style="padding: 5px 3px;">
+        <i class="fas fa-sign-out-alt" style="font-size:14px; float: left; display:inline; padding: 5px 3px;">
+        </i> LogOut
+    </a>
+    <h1>Welcome {{key.name}}</h1>
+    This is the Main Dashboard for promoter
+    <br>
+    <br>
+    <br>
+    this is your referal link
+    <h3>
+        <a href="">{{key.link}}</a>
+    </h3>
+    <input type="text" value={{key.link}} id="myInput" style="display: none;">
+
+    <div class="tooltip">
+        <button onclick="myFunction()" onmouseout="outFunc()">
+            Copy link
+        </button>
+    </div>
+
+    <div><h3>
+        {{time}}
+        
+        TIMEOUT
+        </h3>
+    </div>
+
+    
+    <br>
+    Here are your total referals
+    <h3> total number of referals = {{len}}</h3>
+    ---------------------
+    {% for i in obj %}
+    <h4>. {{i}}</h4>
+    {% endfor %}
+    {% else %}
+    <li style="white-space:nowrap">
+        <a href="{% url 'PRLOGIN' %}" class="nav-item nav-link" style="padding: 23px 3px;">
+            <i class="fas fa-sign-in-alt" style="font-size:14px; float: left; display:inline; padding: 5px 3px;">
+            </i> Login
+        </a>
+    </li>
+    {% endif %}
+
+    <script>
+        function myFunction() {
+            var copyText = document.getElementById("myInput");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyText.value);
+
+            var tooltip = document.getElementById("myTooltip");
+            tooltip.innerHTML = "Copied: " + copyText.value;
+        }
+
+        function outFunc() {
+            var tooltip = document.getElementById("myTooltip");
+            tooltip.innerHTML = "Copy to clipboard";
+        }
+    </script>
+</body>
+
+</html>
