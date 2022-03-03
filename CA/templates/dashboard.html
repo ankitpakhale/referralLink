@@ -8,150 +8,199 @@
     <title>Main dashboard</title>
 
     <style>
-        body{
-            margin: 30px;
-            padding: 30px;
-            background-color: rgb(220, 195, 226);
-            border: rgb(2, 0, 46) 4px solid;
-            border-radius:10px;
-        }
-        #second{
-            background-color: rgb(255, 255, 255);
-            margin-top: 30px;
-            padding: 20px;
-            border: rgb(11, 11, 61) 3px solid;
-            border-radius:10px;
-        }
-        #nav-link{
-            
-            background-color: whitesmoke;
-            margin-left: 1000px;
-            margin-top: 25px;
-            border: rgb(19, 16, 61) 3px solid;
-            font-size: 20px;
-            text-decoration: none;
-            padding: 5px;
-            border-radius: 30px;
-        }
-        #nav-link a:hover
-        {
-            background-color: rgb(255, 255, 255);
-            color:rgb(228, 11, 11)
-        }
-        
-        .fas fa-sign-out-alt{
-            background-color: whitesmoke;
-            font-size:14px; 
-            float: left; 
-            padding: 5px 3px;
+        :root {
+            --dark: #0F0C6E;
+            --background: #9ED8F9;
+            --shade: #33FFD4;
         }
 
-        #head{
-            margin-top: 35px;
-            background-color: whitesmoke;
-            padding: 25px;
-            border: solid rgb(18, 9, 56) 3px;
-            font-size: 20px;
-            border-radius: 10px;
+        body {
+            font-family: 'Ubuntu', sans-serif;
+            background-color: #fde6e6;
+        }
+
+        .container {
+            width: 90%;
+            margin: 1rem 3rem;
+            padding: 1.5rem;
+        }
+
+        .card {
+            width: 90%;
+            background-color: #fffefe;
+            height: auto;
+            margin: 1.8rem auto;
+            padding: 1rem 0.5rem;
+            border-radius: 7px;
+            box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+        }
+
+        .heading {
+            padding: 7px;
+            color: #0F0C6E;
+            font-family: 'Ubuntu', sans-serif;
+            font-weight: bold;
+            font-size: 34px;
             text-align: center;
-
         }
-        #item{
-            border-radius: 5px;
-            padding-left: 20px;
-            padding-right: 20px;
-            font-size: 20px;
+
+        .sign { 
+            color: #0F0C6E;
+            font-family: 'Ubuntu', sans-serif;
+            font-weight: bold;
+            font-size: 22px;
+        }
+
+        .un {
+            width: 76%;
+            color: rgb(38, 50, 56);
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 1px;
+            background: rgba(136, 126, 126, 0.04);
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            outline: none;
+            box-sizing: border-box;
+            border: 2px solid rgba(0, 0, 0, 0.02);
+            margin-bottom: 50px;
+            margin-left: 46px;
             text-align: center;
-            border: rgb(18, 4, 56) solid 3px;
-            background-color: rgb(248, 185, 185);
-        }
-        ol{
-            list-style-type: lower-roman;
-        }
-        #refer{
-            list-style-type: none;
-            overflow: hidden;
-            padding-left: 25px;
-        }
-        #refer li{
-            padding-left: 10px;
-            display:inline-block;
-        }
-        #p{
-            margin-top:40px;
-        }
-        #referlist{
-            background-color: rgb(255, 255, 255);
-            border: rgb(2, 2, 19) solid 3px;
-            border-radius: 5px;
-        }
-        ol li {
-            margin-top: 10px;
+            margin-bottom: 27px;
+            font-family: 'Ubuntu', sans-serif;
         }
 
-        </style>
+        form.form1 {
+            padding-top: 40px;
+        }
+
+        .pass {
+            width: 76%;
+            color: rgb(38, 50, 56);
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 1px;
+            background: rgba(136, 126, 126, 0.04);
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            outline: none;
+            box-sizing: border-box;
+            border: 2px solid rgba(0, 0, 0, 0.02);
+            margin-bottom: 50px;
+            margin-left: 46px;
+            text-align: center;
+            margin-bottom: 27px;
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+        .un:focus,
+        .pass:focus {
+            border: 2px solid rgba(0, 0, 0, 0.18) !important;
+
+        }
+
+        .submit {
+            cursor: pointer;
+            border-radius: 5em;
+            color: #fff;
+            background: linear-gradient(to right, #0F0C6E, #3a0942, #0F0C6E);
+            border: 0;
+            padding-left: 40px;
+            padding-right: 40px;
+            padding-bottom: 10px;
+            padding-top: 10px;
+            font-family: 'Ubuntu', sans-serif;
+            margin-left: 35%;
+            font-size: 13px;
+            box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.04);
+            transition: all 0.5s cubic-bezier(0.87, 0.29, 0, 0.68);
+        }
+
+        .submit:hover {
+            transition: all 0.5s cubic-bezier(0.87, 0.29, 0, 0.68);
+            background: linear-gradient(to right, #3a0942, #0F0C6E, #3a0942);
+        }
+
+
+        a {
+            text-shadow: 0px 0px 3px rgba(117, 117, 117, 0.12);
+            color: #E1BEE7;
+            text-decoration: none
+        }
+
+        .col-sm-12 p {
+            font-size: 12px;
+            margin: 7px 16px;
+        }
+
+        .col-sm-12 a {
+            font-size: 16px;
+            margin: 12px 16px;
+        }
+
+        .col-sm-12 h5 .login {
+            font-size: 16px;
+            margin: 12px 16px;
+            font-size: 19px;
+            color: #01B3E4;
+        }
+    </style>
 </head>
 
 <body>
-    {% if key %}
-    <span id='head'>Welcome {{key.name}}</span >
-        <span id="nav-link"><a href="{% url 'CALOGOUT' %}">
-         LogOut
-    </a></span>
-    
-    <br>
-    
-    <div id='p'>This is the Main Dashboard</div>
-    <br>
-    
-    <div id='second'>
-        <p>this is your referal link</p>
 
-        <ul id='refer'>
-            <li> <h3> <a href="">{{key.link}}</a></h3>
-                <input type="text" value={{key.link}} id="myInput" style="display: none;">
-            </li>
-            <li>
-                <div class="tooltip">
+    <div class="container">
+
+        <div class="heading">CA Dashboard</div>
+
+        <div class="card">
+            {% if key %}
+            <span id='head'>Welcome {{key.name}}</span>
+            <a href="{% url 'CALOGOUT' %}">
+                LogOut
+            </a>
+        </div>
+
+
+
+        <div class="card">
+            <p>this is your referal link</p>
+            <h3> <a href="">{{key.link}}</a></h3>
+            <input type="text" value={{key.link}} id="myInput" style="display: none;">
+
+            <div class="tooltip">
                 <button onclick="myFunction()" onmouseout="outFunc()">Copy link</button>
-                </div> 
-            </li>
-        </ul>
-        
-    </div>   
-    
-    <div><h3>
-        {{time}}
-        
-        TIMEOUT
-        </h3>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>
+                {{time}}
+                TIMEOUT
+            </h3>
+        </div>
+        <div class="card">
+            <div class="sign">
+                Your Total referals
+            </div>
+            <h3> Total Number of Referals = {{len}}</h3>
+            ---------------------------------------------
+            {% for i in obj %}
+            <h4>
+                {{i.id}}. {{i}}
+            </h4>
+
+            {% endfor %}
+        </div>
+        {% else %}
+        <a href="{% url 'CALOGIN' %}" class="nav-item nav-link">
+            <i class="fas fa-sign-in-alt" style="font-size:14px; float: left; display:inline; padding: 5px 3px;">
+            </i> Login
+        </a>
+        {% endif %}
     </div>
-    
-    
-   
-    
-<br>
-<div id='referlist'>
-    
-    <h4>Your Total referals</h4>
-
-<h3> Total Number of Referals = {{len}}</h3>
----------------------------------------------
-    <ol>{% for i in obj %}
-        <li><span id="item">{{i}}</span></li>{% endfor %}
-    </ol>
-
-</div>
-
-
-{% else %}
-<li >
-    <a href="{% url 'CALOGIN' %}" class="nav-item nav-link">
-        <i class="fas fa-sign-in-alt" style="font-size:14px; float: left; display:inline; padding: 5px 3px;">
-        </i> Login
-    </a>
-</li>
-{% endif %}
 
     <script>
         function myFunction() {
