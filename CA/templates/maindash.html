@@ -117,8 +117,8 @@
 </head>
 <body>
     <div class="container">
-        <div class="heading">CA Dashboard</div>
-        {% if key %}
+        <div class="heading">Intelligere Dashboard</div>
+
         <div class="card">
             <div class="spacing">
                 <div class="name">Welcome {{key.name}}</div>
@@ -134,39 +134,48 @@
             </div>
             <div class="row">
                 <h4>
-                    {{key.link}}
+                    {{link}}
                 </h4>
-                <input type="text" value={{key.link}} id="myInput" style="display: none;">                
+                <input type="text" value={{link}} id="myInput" style="display: none;">                
                 <div class="tooltip">
                     <button class="submit" onclick="myFunction()" onmouseout="outFunc()">Copy link</button>
                 </div>
             </div>
         </div>
-        <div class="card">
-            <h3>
-                {{time}} TIMEOUT
-            </h3>
-        </div>
 
+        <!-- This card is for CA -->
+        {% if caobj %}
         <div class="card">
             <div class="sign">
-                Your Total referals
+                Total CA referals
             </div>
-            <h3> Total Number of Referals = {{len}}</h3>
-            {% for i in obj %}
+            <h3> Total Number of CA Referals = {{calen}}</h3>
+            {% for i in caobj %}
             <h4>
                  {{i}}
             </h4>
             {% endfor %}
         </div>
-        
-        {% else %}
-        <a href="{% url 'CALOGIN' %}" class="nav-item nav-link">
-            <i class="fas fa-sign-in-alt" style="font-size:14px; float: left; display:inline; padding: 5px 3px;">
-            </i> Login
-        </a>
         {% endif %}
+
+        <!-- This card is for Promoter -->
+        {% if probj %}
+        <div class="card">
+            <div class="sign">
+                Total Promoter referals
+            </div>
+            <h3> Total Number of Promoter Referals = {{prlen}}</h3>
+            {% for i in probj %}
+            <h4>
+                 {{i}}
+            </h4>
+            {% endfor %}
+        </div>
+        {% endif %}
+       
     </div>
+
+    <!-- this is the script for copying the referal link -->
     <script>
         function myFunction() {
             var copyText = document.getElementById("myInput");

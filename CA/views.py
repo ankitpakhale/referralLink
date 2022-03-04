@@ -7,7 +7,7 @@ from datetime import datetime
 # Create your views here.
 
 # CA signup form
-def SignupView(self):
+def SignupView(self, ref_code):
     if self.POST:
         Name = self.POST['name']
         print(Name)
@@ -227,8 +227,6 @@ def timeout1(request):
             return HttpResponse(f'You can use it till {due_id.payment_due_date}')
     return redirect('CALOGIN')
 
-
-
 def PRtimeout(request):
     if 'email' in request.session:
         
@@ -245,9 +243,19 @@ def PRtimeout(request):
     return redirect('PRLOGIN')
 
 
+def MAINDASH(request):
+    caobj =  CasignUp.objects.all()
+    probj =  PrsignUp.objects.all()
+    link  = 'http://127.0.0.1:8000/casignup/j75mnhd67v4m18r'
 
-
-
+    context = {
+        'caobj': caobj,
+        'probj': probj,        
+        'calen': len(caobj),
+        'prlen': len(probj),
+        'link' : link,
+    }
+    return render(request, 'maindash.html', context)
 
 
 
