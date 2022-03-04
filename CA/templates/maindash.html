@@ -152,7 +152,7 @@
             <h3> Total Number of CA Referals = {{calen}}</h3>
             {% for i in caobj %}
             <h4>
-                 {{i}}
+                {{i}} : {{i.payment_due_date}}
             </h4>
             {% endfor %}
         </div>
@@ -167,14 +167,13 @@
             <h3> Total Number of Promoter Referals = {{prlen}}</h3>
             {% for i in probj %}
             <h4>
-                 {{i}}
+                 {{i}} : {{i.payment_due_date}}
             </h4>
             {% endfor %}
         </div>
         {% endif %}
-       
+        
     </div>
-
     <!-- this is the script for copying the referal link -->
     <script>
         function myFunction() {
