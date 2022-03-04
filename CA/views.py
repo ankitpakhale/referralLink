@@ -138,12 +138,11 @@ def prSignupView(self,ref_code):
                 v.recommend_by=d.name
                 v.save()
 
-                q1 = PrsignUp.objects.filter(recommend_by = d.name)
-                
-                k = CasignUp()
-                if q1:
-                    k.subuser = d
-                    k.save()
+                # q1 = PrsignUp.objects.filter(recommend_by = d.name)                
+                # k = CasignUp()
+                # if q1:
+                #     k.subuser = d
+                #     k.save()
 
                 # return redirect('PRLOGIN',ref_code)
                 return redirect('PRLOGIN')
