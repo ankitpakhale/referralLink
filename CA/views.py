@@ -134,10 +134,17 @@ def prSignupView(self,ref_code):
                         d=CasignUp.objects.get(link="http://127.0.0.1:8000/prsignup/"+ref_code)
                 except:
                         d=PrsignUp.objects.get(link="http://127.0.0.1:8000/prsignup/"+ref_code)
-
                 print(d.id)
                 v.recommend_by=d.name
                 v.save()
+
+                q1 = PrsignUp.objects.filter(recommend_by = d.name)
+                
+                k = CasignUp()
+                if q1:
+                    k.subuser = d
+                    k.save()
+
                 # return redirect('PRLOGIN',ref_code)
                 return redirect('PRLOGIN')
 
@@ -159,6 +166,7 @@ def prlogin(self):
             print("Inside first try block")
             check = PrsignUp.objects.get(email = em)
             print("Email is ",em,check.email)
+            
             if check.password == pass1:
                 self.session['email'] = check.email
                 return redirect('PRDASHBOARD')
@@ -241,7 +249,6 @@ def PRtimeout(request):
             print(f'You can use it till {due_id.payment_due_date}')
             return HttpResponse(f'You can use it till {due_id.payment_due_date}')
     return redirect('PRLOGIN')
-
 
 def MAINDASH(request):
     caobj =  CasignUp.objects.all()
