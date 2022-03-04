@@ -251,9 +251,9 @@ def PRtimeout(request):
 
 def MAINDASH(request):
     caobj =  CasignUp.objects.all()
+    print(caobj)
     probj =  PrsignUp.objects.all()
     link  = 'http://127.0.0.1:8000/casignup/j75mnhd67v4m18r'
-
     context = {
         'caobj': caobj,
         'probj': probj,        
@@ -261,6 +261,12 @@ def MAINDASH(request):
         'prlen': len(probj),
         'link' : link,
     }
+    
+    # obj = CasignUp.objects.get(email = caobj[0].email)
+    # print(obj)
+    # print(obj.name)
+    # print(obj.email)
+    
     return render(request, 'maindash.html', context)
 
 
