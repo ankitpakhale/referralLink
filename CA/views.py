@@ -209,18 +209,19 @@ def PRdashboard(request):
         
     return redirect('PRLOGIN')
 
-
+# ca logout
 def userLogOut(request):
     del request.session['email']
     print('User logged out')
     return redirect('CALOGIN')
 
+# pr logout
 def prLogOut(request):
     del request.session['email']
     print('User logged out')
     return redirect('PRLOGIN')    
 
-
+# ca timeout
 def timeout1(request):
     if 'email' in request.session:
         v=CasignUp.objects.get(email=request.session['email'])
@@ -234,6 +235,7 @@ def timeout1(request):
             return HttpResponse(f'You can use it till {due_id.payment_due_date}')
     return redirect('CALOGIN')
 
+# pr timeout
 def PRtimeout(request):
     if 'email' in request.session:
         
@@ -249,6 +251,7 @@ def PRtimeout(request):
             return HttpResponse(f'You can use it till {due_id.payment_due_date}')
     return redirect('PRLOGIN')
 
+# Dashboard for main Host
 def MAINDASH(request):
     caobj =  CasignUp.objects.all()
     print(caobj)
