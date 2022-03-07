@@ -134,10 +134,16 @@ def prSignupView(self,ref_code):
                         d=CasignUp.objects.get(link="http://127.0.0.1:8000/prsignup/"+ref_code)
                 except:
                         d=PrsignUp.objects.get(link="http://127.0.0.1:8000/prsignup/"+ref_code)
-
                 print(d.id)
                 v.recommend_by=d.name
                 v.save()
+
+                # q1 = PrsignUp.objects.filter(recommend_by = d.name)                
+                # k = CasignUp()
+                # if q1:
+                #     k.subuser = d
+                #     k.save()
+
                 # return redirect('PRLOGIN',ref_code)
                 return redirect('PRLOGIN')
 
@@ -159,6 +165,7 @@ def prlogin(self):
             print("Inside first try block")
             check = PrsignUp.objects.get(email = em)
             print("Email is ",em,check.email)
+            
             if check.password == pass1:
                 self.session['email'] = check.email
                 return redirect('PRDASHBOARD')
@@ -202,18 +209,19 @@ def PRdashboard(request):
         
     return redirect('PRLOGIN')
 
-
+# ca logout
 def userLogOut(request):
     del request.session['email']
     print('User logged out')
     return redirect('CALOGIN')
 
+# pr logout
 def prLogOut(request):
     del request.session['email']
     print('User logged out')
     return redirect('PRLOGIN')    
 
-
+# ca timeout
 def timeout1(request):
     if 'email' in request.session:
         v=CasignUp.objects.get(email=request.session['email'])
@@ -227,6 +235,7 @@ def timeout1(request):
             return HttpResponse(f'You can use it till {due_id.payment_due_date}')
     return redirect('CALOGIN')
 
+# pr timeout
 def PRtimeout(request):
     if 'email' in request.session:
         
@@ -242,12 +251,12 @@ def PRtimeout(request):
             return HttpResponse(f'You can use it till {due_id.payment_due_date}')
     return redirect('PRLOGIN')
 
-
+# Dashboard for main Host
 def MAINDASH(request):
     caobj =  CasignUp.objects.all()
+    print(caobj)
     probj =  PrsignUp.objects.all()
     link  = 'http://127.0.0.1:8000/casignup/j75mnhd67v4m18r'
-
     context = {
         'caobj': caobj,
         'probj': probj,        
@@ -255,6 +264,12 @@ def MAINDASH(request):
         'prlen': len(probj),
         'link' : link,
     }
+    
+    # obj = CasignUp.objects.get(email = caobj[0].email)
+    # print(obj)
+    # print(obj.name)
+    # print(obj.email)
+    
     return render(request, 'maindash.html', context)
 
 
