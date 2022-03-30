@@ -8,10 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>QR Docs</title>
-
-    <link rel="stylesheet" href="{% static 'css/Style_.css' %}">
-
+    <title>My Profile</title>
 
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/unicons.css' %}">
@@ -19,11 +16,10 @@
     <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/home_.css' %}">
     <link rel="stylesheet" href="{% static 'css/upload_.css' %}">
-  
+
     <!-- MAIN STYLE -->
     <link rel="stylesheet" href="{% static 'css/tooplate-style.css' %}">
-  
-  
+    
 <!--
 
 Tooplate 2115 Marvel
@@ -34,7 +30,7 @@ https://www.tooplate.com/view/2115-marvel
   </head>
   <body>
 
-
+  
   <!-- MENU -->
   <nav class="navbar navbar-expand-sm navbar-light">
     <div class="container">
@@ -96,9 +92,141 @@ https://www.tooplate.com/view/2115-marvel
     </div>
   </nav>
 
+  
+    <br>
+    <br>
+    <br>
+
+    	<section class="ftco-section">
+		<div class="container">
+			
+
+            <div class="upload_">
+                <input type="file" id="real-file" hidden="hidden" />
+                <h4>Upload the documents and generate QR code:</h4> 
+                <button type="button" id="custom-button">CHOOSE A FILE</button>
+                <span id="custom-text">No file chosen, yet.</span>
+              </div>
+              
+              
+              <script>
+                const realFileBtn = document.getElementById("real-file");
+                const customBtn = document.getElementById("custom-button");
+                const customTxt = document.getElementById("custom-text");
+              
+                customBtn.addEventListener("click", function() {
+                  realFileBtn.click();
+                });
+              
+                realFileBtn.addEventListener("change", function() {
+                  if (realFileBtn.value) {
+                    customTxt.innerHTML = realFileBtn.value.match(
+                      /[\/\\]([\w\d\s\.\-\(\)]+)$/
+                    )[1];
+                  } else {
+                    customTxt.innerHTML = "No file chosen, yet.";
+                  }
+              });
+              
+              </script>
+
+
+              <br>
+              <br>
+              <br>
+
+              <div class="row justify-content-center">
+				<div class="col-md-6 text-center mb-5">
+					<h2 class="heading-section">Find your Uploaded Documents</h2>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-12">
+					<!-- <h4 class="text-center mb-4">Gene</h4> -->
+					<div class="table-wrap">
+						<table class="table">
+					    <thead class="thead-primary">
+					      <tr>
+					        <th>Sr. No</th>
+					        <th>Document Name</th>
+					        <th>Date of upload</th>
+					        <!-- <th>Renewal</th>
+					        <th>Transfer</th> -->
+					        <th>QR Code</th>
+					      </tr>
+					    </thead>
+					    <tbody>
+					      <tr>
+					        <th scope="row" class="scope" >1</th>
+					        <td>Aadhar card</td>
+					        <td>11th Jan 2022</td>
+					        <!-- <td>$5.00</td>
+					        <td>$5.00</td> -->
+					        <td><a href="#" class="btn btn-primary">Download</a></td>
+					      </tr>
+					      <tr>
+					        <th scope="row" class="scope" >2</th>
+					        <td>Pan Card</td>
+					        <td>12th Jan 2022</td>
+					        <!-- <td>$5.00</td>
+					        <td>$5.00</td> -->
+					        <td><a href="#" class="btn btn-primary">Download</a></td>
+					      </tr>
+					      <tr>
+					        <th scope="row" class="scope" >3</th>
+					        <td>Voter Id</td>
+					        <td>13th Jan 2022</td>
+					        <!-- <td>$5.00</td>
+					        <td>$5.00</td> -->
+					        <td><a href="#" class="btn btn-primary">Download</a></td>
+					      </tr>
+					      <tr>
+					        <th scope="row" class="scope" >4</th>
+					        <td>Final Marksheet</td>
+					        <td>10th Jan 2022</td>
+					        <!-- <td>$5.00</td>
+					        <td>$5.00</td> -->
+					        <td><a href="#" class="btn btn-primary">Download</a></td>
+					      </tr>
+					      <tr>
+					        <th scope="row" class="scope" >5</th>
+					        <td>Passport</td>
+					        <td>25th July 2022</td>
+					        <!-- <td>$5.00</td>
+					        <td>$5.00</td> -->
+					        <td><a href="#" class="btn btn-primary">Download</a></td>
+					      </tr>
+					      <tr>
+					        <th scope="row" class="scope border-bottom-0">6</th>
+					        <td class="border-bottom-0">PUC</td>
+					        <td class="border-bottom-0">26th July 2022</td>
+					        <!-- <td class="border-bottom-0">$5.00</td>
+					        <td class="border-bottom-0">$5.00</td> -->
+					        <td class="border-bottom-0"><a href="#" class="btn btn-primary">Download</a></td>
+					      </tr>
+					    </tbody>
+					  </table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<script src="my_js/jquery.min.js"></script>
+  <script src="my_js/popper.js"></script>
+  <script src="my_js/bootstrap.min.js"></script>
+  <script src="my_js/main.js"></script>
+
+<!-- my_js is not found anywhere!! -->
 
 
 
+
+
+
+
+<br>
     <!-- FOOTER -->
     <footer class="footer py-5">
         <div class="container">
@@ -121,6 +249,7 @@ https://www.tooplate.com/view/2115-marvel
    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
    <script src="{% static 'js/smoothscroll.js' %}"></script>
    <script src="{% static 'js/custom.js' %}"></script>
+   
 
 </body>
 </html>

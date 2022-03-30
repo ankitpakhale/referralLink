@@ -272,8 +272,35 @@ def MAINDASH(request):
     
     return render(request, 'maindash.html', context)
 
+# ------------------------------------------------------------------------------------------------
 
 
+def hello(request):
+    return HttpResponse("Hello User!")
 
+def login1(request):
+    return render(request,'login1.html')
 
+def signup1(request):
+    return render(request,'signup1.html')
 
+def forget(request):
+    return render(request,'forget.html')
+
+def index(request):
+    return render(request,'index.html')
+
+def myprofile(request):
+    return render(request,'myprofile.html')
+
+def home(request):
+    return render(request, 'home.html')
+
+def contact(request):
+    return render(request, 'contact.html')
+
+def blog(request):
+    return render(request, 'blog.html')
+
+def faq(request):
+    return render(request, 'faq.html')
