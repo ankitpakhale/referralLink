@@ -56,7 +56,8 @@ def login(self):
             if check.password == pass1:
                 # print(check.Password)
                 self.session['email'] = check.email
-                return redirect('CADASHBOARD')
+                # return redirect('CADASHBOARD')
+                return redirect('cahome')
                 # nameMsg = CasignUp.objects.get(email = em)
                 # msg = 'User Successfully logged in'
                 # print(msg)
@@ -168,7 +169,8 @@ def prlogin(self):
             
             if check.password == pass1:
                 self.session['email'] = check.email
-                return redirect('PRDASHBOARD')
+                # return redirect('PRDASHBOARD')
+                return redirect('prhome')
 
                 # nameMsg = PrsignUp.objects.get(email = em)
                 # msg = 'User Successfully logged in'
@@ -296,8 +298,16 @@ def myprofile(request):
 def home(request):
     return render(request, 'home.html')
 
-# def contact(request):
-#     return render(request, 'contact.html')
+def cahome(request):
+    if 'email' in request.session:  
+        ca = CasignUp.objects.get(email=request.session['email'])
+        return render(request, 'home.html', {'ca': ca})
+
+def prhome(request):
+    if 'email' in request.session:  
+        pr = PrsignUp.objects.get(email=request.session['email'])
+        return render(request, 'home.html', {'pr': pr})
+
 
 def contact(request):
     if 'email' in request.session:  

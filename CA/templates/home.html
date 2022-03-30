@@ -56,6 +56,20 @@ https://www.tooplate.com/view/2115-marvel
             <a href="{% url 'blog' %}" class="nav-link"><span data-hover="Blog">Blog</span></a>
           </li>
 
+          {% if ca %}
+          <li class="nav-item">
+            <a href="{% url 'CADASHBOARD' %}" class="nav-link"><span data-hover="CA Dashboard">CA Dashboard</span></a>
+          </li>
+          {% endif %}
+
+          {% if pr %}
+          <li class="nav-item">
+            <a href="{% url 'PRDASHBOARD' %}" class="nav-link"><span data-hover="PR Dashboard">PR Dashboard</span></a>
+          </li>
+          {% endif %}
+
+
+
           <li class="nav-item">
             <a href="{% url 'home' %}" class="nav-link" id="current"><span data-hover="About">About</span></a>
           </li>
@@ -63,10 +77,6 @@ https://www.tooplate.com/view/2115-marvel
           <li class="nav-item">
             <a href="{% url 'contact' %}" class="nav-link"><i class="fa-solid fa-address-card fa-3x"></i><span
                 data-hover="Contact">Contact</span></a>
-          </li>
-
-          <li class="nav-item">
-            <a href="{% url 'myprofile' %}" class="nav-link"><span data-hover="My Profile">My Profile</span></a>
           </li>
 
           <li class="nav-item">

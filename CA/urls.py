@@ -17,7 +17,12 @@ urlpatterns = [
     path('',views.index, name='index'),
     path('login/',views.login1, name='login'),
     path('signup/',views.signup1, name='signup'),
+    
     path('home/',views.home, name='home'),
+    
+    path('cahome/',views.cahome, name='cahome'),
+    path('prhome/',views.prhome, name='prhome'),
+    
     path('contact/',views.contact, name='contact'),
     path('blog/',views.blog, name='blog'),
     path('faq/',views.faq, name='faq'),
