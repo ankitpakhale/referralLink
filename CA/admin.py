@@ -4,3 +4,4 @@ from .models import *
 
 admin.site.register(CasignUp)
 admin.site.register(PrsignUp)
+admin.site.register(ContactForm)

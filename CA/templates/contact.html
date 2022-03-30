@@ -96,11 +96,11 @@
 
     <div class="container-contact100">
 		<div class="wrap-contact100">
-			<form class="contact100-form validate-form">
+			<form method="POST" class="contact100-form validate-form">
+				{% csrf_token %}
 				<span class="contact100-form-title">
 					Send Us A Message
 				</span>
-
 				<label class="label-input100" for="first-name">Tell us your name *</label>
 				<div class="wrap-input100 rs1-wrap-input100 validate-input" data-validate="Type first name">
 					<input id="first-name" class="input100" type="text" name="first-name" placeholder="First name">
@@ -130,9 +130,10 @@
 				</div>
 
 				<div class="container-contact100-form-btn">
-					<button class="contact100-form-btn">
+					<!-- <button class="contact100-form-btn">
 						Send Message
-					</button>
+					</button> -->
+					<input type="submit" class="contact100-form-btn" value="Send Message">
 				</div>
 			</form>
 
@@ -244,5 +245,10 @@
    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
    <script src="{% static 'js/smoothscroll.js' %}"></script>
    <script src="{% static 'js/custom.js' %}"></script>
+
+   {% if msg %}
+   <script>alert('{{ msg }}')</script>
+   {% endif %}
+
 </body>
 </html>

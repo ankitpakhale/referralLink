@@ -296,8 +296,24 @@ def myprofile(request):
 def home(request):
     return render(request, 'home.html')
 
+# def contact(request):
+#     return render(request, 'contact.html')
+
 def contact(request):
-    return render(request, 'contact.html')
+    if 'email' in request.session:  
+        key = ''
+        if request.method == 'POST':
+            db = ContactForm(fname = request.POST.get('first-name'),
+                             lname = request.POST.get('last-name'), 
+                             email = request.POST.get('email'), 
+                             number = request.POST.get('phone'), 
+                             details = request.POST.get('message')
+                            )
+            db.save()
+            key = "Your Message has been sent successfully"
+        return render(request, 'contact.html', {'msg': key})
+    return redirect('LOGIN')
+
 
 def blog(request):
     return render(request, 'blog.html')

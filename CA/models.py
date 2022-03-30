@@ -38,3 +38,14 @@ class CasignUp(models.Model):
         code=genrated_ref_code()
         self.link="http://127.0.0.1:8000/prsignup/"+str(code)
         super().save(*args,**kwargs)    
+
+
+class ContactForm(models.Model):
+    fname = models.CharField(max_length=30, default='')
+    lname = models.CharField(max_length=30, default='')
+    email = models.EmailField(default='')
+    number = models.PositiveIntegerField(default='')
+    details = models.CharField(max_length=1000, default='')
+    
+    def __str__(self):
+        return self.fname
