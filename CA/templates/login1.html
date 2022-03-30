@@ -137,19 +137,21 @@ https://www.tooplate.com/view/2115-marvel
 
                       <h4 class="mb-4 pb-3">Log In</h4>
 
-                      <form action="{% url 'home' %}" onsubmit="validate()">
+                      <form method="POST" action="{% url 'home' %}" onsubmit="validate()">
+                        {% csrf_token %}
                         <div class="form-group">
-                          <input type="email" name="logemail" class="form-style" placeholder="Your Email" id="logemail"
+                          <input type="email" name="email" class="form-style" placeholder="Your Email" id="logemail"
                             autocomplete="off">
                           <i class="input-icon uil uil-at"></i>
                         </div>
                         <div class="form-group mt-2">
-                          <input type="password" name="logpass" class="form-style" placeholder="Your Password"
+                          <input type="password" name="password" class="form-style" placeholder="Your Password"
                             id="logpass" autocomplete="off">
                           <i class="input-icon uil uil-lock-alt"></i>
                         </div>
                         <!-- <a href="#" class="btn mt-4" type="submit">submit</a> -->
-                        <button type="submit" class="btn mt-4">Submit</button>
+                        <!-- <button type="submit" class="btn mt-4">Submit</button> -->
+                        <input class="btn mt-4" type="submit" value="Login">
                       </form>
 
                       <p class="mb-0 mt-4 text-center"><a href="{% url 'forget' %}" class="link">Forgot your
