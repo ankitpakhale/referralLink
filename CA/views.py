@@ -57,7 +57,7 @@ def login(self):
                 # print(check.Password)
                 self.session['email'] = check.email
                 # return redirect('CADASHBOARD')
-                return redirect('cahome')
+                return redirect('home')
                 # nameMsg = CasignUp.objects.get(email = em)
                 # msg = 'User Successfully logged in'
                 # print(msg)
@@ -154,7 +154,6 @@ def prSignupView(self,ref_code):
                 
         finally:
             messages.success(self, 'Signup Successfully Done...')
-
     return render(self,'prsignup.html')
 
 # promoter login
@@ -165,13 +164,11 @@ def prlogin(self):
         try:
             print("Inside first try block")
             check = PrsignUp.objects.get(email = em)
-            print("Email is ",em,check.email)
-            
+            print("Email is ",em,check.email)            
             if check.password == pass1:
                 self.session['email'] = check.email
                 # return redirect('PRDASHBOARD')
-                return redirect('prhome')
-
+                return redirect('home')
                 # nameMsg = PrsignUp.objects.get(email = em)
                 # msg = 'User Successfully logged in'
                 # print(msg)
@@ -192,7 +189,6 @@ def PRdashboard(request):
             nameMsg = PrsignUp.objects.get(email =  request.session['email'])  
             obj=PrsignUp.objects.filter(recommend_by=nameMsg.name)
             print(obj)
-
             due_id = PrsignUp.objects.get(id=nameMsg.id)
             newdate = datetime.today().strftime('%Y-%m-%d')
             print("This is new date", newdate)
@@ -201,14 +197,10 @@ def PRdashboard(request):
                 z = 'Please pay the payment'
             else:
                 z = f'You can use it till {due_id.payment_due_date}'
-
             return render(request, 'prdashboard.html', {'key':nameMsg,'obj':obj,'len':len(obj), 'time' : z })
-
         except:
             del request.session['email']
-            return redirect('PRLOGIN')
-               
-        
+            return redirect('PRLOGIN')             
     return redirect('PRLOGIN')
 
 # ca logout
@@ -295,34 +287,36 @@ def index(request):
 def myprofile(request):
     return render(request,'myprofile.html')
 
+# def home(request):
+#     if 'email' in request.session: 
+#         ca = ''
+#         pr = ''
+#         try: 
+#             ca = CasignUp.objects.get(email=request.session['email'])
+#         except:
+#             pr = PrsignUp.objects.get(email=request.session['email'])
+#         return render(request, 'home.html', {'ca': ca, 'pr': pr})
+
 def home(request):
-    return render(request, 'home.html')
-
-def cahome(request):
-    if 'email' in request.session:  
-        ca = CasignUp.objects.get(email=request.session['email'])
-        return render(request, 'home.html', {'ca': ca})
-
-def prhome(request):
-    if 'email' in request.session:  
-        pr = PrsignUp.objects.get(email=request.session['email'])
-        return render(request, 'home.html', {'pr': pr})
-
+    if 'email' in request.session:        
+        ca = CasignUp.objects.filter(email=request.session['email'])
+        pr = PrsignUp.objects.filter(email=request.session['email'])
+        return render(request, 'home.html', {'ca': ca, 'pr': pr})
+    
 
 def contact(request):
-    if 'email' in request.session:  
-        key = ''
-        if request.method == 'POST':
-            db = ContactForm(fname = request.POST.get('first-name'),
-                             lname = request.POST.get('last-name'), 
-                             email = request.POST.get('email'), 
-                             number = request.POST.get('phone'), 
-                             details = request.POST.get('message')
-                            )
-            db.save()
-            key = "Your Message has been sent successfully"
-        return render(request, 'contact.html', {'msg': key})
-    return redirect('LOGIN')
+    key = ''
+    if request.method == 'POST':
+        db = ContactForm(fname = request.POST.get('first-name'),
+                            lname = request.POST.get('last-name'), 
+                            email = request.POST.get('email'), 
+                            number = request.POST.get('phone'), 
+                            details = request.POST.get('message')
+                        )
+        db.save()
+        key = "Your Message has been sent successfully"
+    return render(request, 'contact.html', {'msg': key})
+
 
 
 def blog(request):
