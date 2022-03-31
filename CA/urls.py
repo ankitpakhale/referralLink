@@ -24,6 +24,4 @@ urlpatterns = [
     path('forget/',views.forget, name='forget'),
     path('myprofile/',views.myprofile, name='myprofile'),
 
-    path('prd/',views.prd, name='prd'),
-    path('cad/',views.cad, name='cad'),
 ]
