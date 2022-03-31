@@ -287,6 +287,12 @@ def index(request):
 def myprofile(request):
     return render(request,'myprofile.html')
 
+def prd(request):
+    return render(request,'prd.html')
+
+def cad(request):
+    return render(request,'cad.html')
+
 # def home(request):
 #     if 'email' in request.session: 
 #         ca = ''
@@ -323,4 +329,4 @@ def blog(request):
     return render(request, 'blog.html')
 
 def faq(request):
-    return render(request, 'faq.html')
+    return render(request, 'FAQ.html')
