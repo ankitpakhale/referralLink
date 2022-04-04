@@ -21,6 +21,8 @@ class PrsignUp(models.Model):
         self.link="http://127.0.0.1:8000/prsignup/"+str(code)
         super().save(*args,**kwargs)         
 
+
+
 class CasignUp(models.Model):
     name = models.CharField(max_length=30, default='')
     email = models.EmailField(default='')
@@ -30,6 +32,11 @@ class CasignUp(models.Model):
     link=models.CharField(max_length=55,default='')
     payment_due_date = models.DateField(default=datetime.now()+timedelta(days=15))
     subuser=models.ForeignKey(PrsignUp,on_delete=models.CASCADE,null=True,blank=True)
+    
+    percentage = models.CharField(default='', max_length=15)
+    totalNoOfReferrals = models.CharField(default=0, max_length=100)
+    amount = models.CharField(default=0, max_length=15)
+
 
     def __str__(self):
         return self.email

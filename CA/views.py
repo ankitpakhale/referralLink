@@ -253,8 +253,16 @@ def PRtimeout(request):
 
 # Dashboard for main Host
 def MAINDASH(request):
+    li = []
     caobj =  CasignUp.objects.all()
-    print(caobj)
+
+    for i in caobj:
+        caRefCount = PrsignUp.objects.filter(recommend_by = i.name)
+        counters = 0
+        for j in caRefCount:
+            counters += 1
+        li.append(counters)
+    
     probj =  PrsignUp.objects.all()
     link  = 'http://127.0.0.1:8000/casignup/j75mnhd67v4m18r'
     context = {
@@ -263,7 +271,10 @@ def MAINDASH(request):
         'calen': len(caobj),
         'prlen': len(probj),
         'link' : link,
+        'li' : li,
+
     }
+    print(li)
     
     # obj = CasignUp.objects.get(email = caobj[0].email)
     # print(obj)
