@@ -44,7 +44,8 @@ def SignupView(self, ref_code):
             messages.success(self, 'Signup Successfully Done...')
 
     return render(self,'signup.html')
-# ca login
+
+
 def login(self):
     if self.POST:
         em = self.POST.get('email')
