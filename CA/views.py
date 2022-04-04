@@ -115,17 +115,17 @@ def prSignupView(self,ref_code):
         Password = self.POST['password']
         print(Password)
         ConfirmPassword = self.POST['confirmPassword']
-        print(ConfirmPassword)
+        print(ConfirmPassword,"this is a confirmation")
 
         try:
             data=PrsignUp.objects.filter(email=Email)
+            print(data)
             if data:
                 msg = 'Email already taken'
                 return render(self , 'prsignup.html',{'msg':msg})
 
             elif ConfirmPassword == Password:
                 v = PrsignUp()
-
                 v.name = Name
                 v.email = Email
                 v.number = Number
@@ -302,7 +302,6 @@ def home(request):
         ca = CasignUp.objects.filter(email=request.session['email'])
         pr = PrsignUp.objects.filter(email=request.session['email'])
         return render(request, 'home.html', {'ca': ca, 'pr': pr})
-    
 
 def contact(request):
     key = ''
@@ -311,8 +310,8 @@ def contact(request):
                             lname = request.POST.get('last-name'), 
                             email = request.POST.get('email'), 
                             number = request.POST.get('phone'), 
-                            details = request.POST.get('message')
-                        )
+                            details = request.POST.get('message'))
+
         db.save()
         key = "Your Message has been sent successfully"
     return render(request, 'contact.html', {'msg': key})
