@@ -10,16 +10,10 @@ from datetime import datetime
 def SignupView(self, ref_code):
     if self.POST:
         Name = self.POST['name']
-        print(Name)
         Email = self.POST['email']
-        print(Email)
         Number = self.POST['number']
-        print(Number)
         Password = self.POST['password']
-        print(Password)
         ConfirmPassword = self.POST['confirmPassword']
-        print(ConfirmPassword)
-
         try:
             data=CasignUp.objects.filter(email=Email)
             if data:
@@ -27,12 +21,8 @@ def SignupView(self, ref_code):
                 return render(self , 'signup.html',{'msg':msg})
 
             elif ConfirmPassword == Password:
-                v = CasignUp()
-                v.name = Name
-                v.email = Email
-                v.number = Number
-                v.password = Password
-                v.confirmPassword = ConfirmPassword
+                v = CasignUp(name = Name, email = Email, number = Number, password = Password, confirmPassword = ConfirmPassword)
+                # v.percentage = '10%'
                 v.save()
                 return redirect('CALOGIN')
 
@@ -106,30 +96,17 @@ def dashboard(request):
 def prSignupView(self,ref_code):
     if self.POST:
         Name = self.POST['name']
-        print(Name)
         Email = self.POST['email']
-        print(Email)
         Number = self.POST['number']
-        print(Number)
         Password = self.POST['password']
-        print(Password)
         ConfirmPassword = self.POST['confirmPassword']
-        print(ConfirmPassword)
-
         try:
             data=PrsignUp.objects.filter(email=Email)
             if data:
                 msg = 'Email already taken'
                 return render(self , 'prsignup.html',{'msg':msg})
-
             elif ConfirmPassword == Password:
-                v = PrsignUp()
-
-                v.name = Name
-                v.email = Email
-                v.number = Number
-                v.password = Password
-                v.confirmPassword = ConfirmPassword
+                v = PrsignUp(name = Name, email = Email, number = Number, password = Password, confirmPassword = ConfirmPassword)
                 try:
                         d=CasignUp.objects.get(link="http://127.0.0.1:8000/prsignup/"+ref_code)
                 except:
@@ -137,7 +114,21 @@ def prSignupView(self,ref_code):
                 print(d.id)
                 v.recommend_by=d.name
                 v.save()
+            # --------------------------------------------------------------------------------
+                q1 = PrsignUp.objects.filter(recommend_by = d.name)
+                d.totalNoOfReferrals = len(q1)     
+                for i in q1:
+                    if i.ispaid == True:
+                        try:
+                            d.amount = ((10000*20)/100) * len(q1)
+                            print(d.amount)
+                        except:
+                            pass
+                    else:
+                        print(f"{i} user has not paid yet")
+                d.save()
 
+            # --------------------------------------------------------------------------------
                 # q1 = PrsignUp.objects.filter(recommend_by = d.name)                
                 # k = CasignUp()
                 # if q1:
@@ -262,7 +253,7 @@ def MAINDASH(request):
         for j in caRefCount:
             counters += 1
         li.append(counters)
-    
+
     probj =  PrsignUp.objects.all()
     link  = 'http://127.0.0.1:8000/casignup/j75mnhd67v4m18r'
     context = {
