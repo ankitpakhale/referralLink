@@ -14,7 +14,7 @@ class PrsignUp(models.Model):
     payment_due_date = models.DateField(default=datetime.now()+timedelta(days=15))
     
     def __str__(self):
-        return self.name
+        return self.email
 
     def save(self,*args,**kwargs):
         code=genrated_ref_code()
@@ -32,7 +32,7 @@ class CasignUp(models.Model):
     subuser=models.ForeignKey(PrsignUp,on_delete=models.CASCADE,null=True,blank=True)
 
     def __str__(self):
-        return self.name
+        return self.email
 
     def save(self,*args,**kwargs):
         code=genrated_ref_code()
