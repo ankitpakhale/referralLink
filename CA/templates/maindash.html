@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -131,14 +130,12 @@
 <body>
     <div class="container">
         <div class="heading">Intelligere</div>
-
         <div class="card">
             <div class="spacing">
                 <div class="name">Welcome {{key.name}}</div>
-
-                <div class="logout">
+                <!-- <div class="logout">
                     <a href="{% url 'CALOGOUT' %}">Logout</a>
-                </div>
+                </div> -->
             </div>
         </div>
         <div class="card">
@@ -156,23 +153,30 @@
             </div>
         </div>
 
-        
-        <!-- This card is for CA -->
-        {% if caobj %}
+
+        <!-- This card is for Total Number of CA Referals -->
         <div class="card">
             <div class="sign">
                 Total CA referals
+                <h5> Total Number of CA Referals = {{calen}}</h5>
             </div>
-            <h3> Total Number of CA Referals = {{calen}}</h3>
-            {% for i in caobj %}
-            {% for j in li %}
-            <h4>
-                {{i}} : {{i.payment_due_date}} : {{ j }}
-            </h4>
-            {% endfor %}
-            {% endfor %}
         </div>
-        {% endif %}
+
+        <!-- This card is for individual CA -->
+        {% for i in caobj %}
+        <div class="card">
+            <h4>
+                {{i}} Payment Due date is {{i.payment_due_date}}
+                <br>
+                
+                {% for j in li %}
+                {{i}} Total Referals are {{ j }}
+                {% endfor %}
+                
+                <br>
+            </h4>
+        </div>
+        {% endfor %}
 
         <!-- This card is for Promoter -->
         {% if probj %}

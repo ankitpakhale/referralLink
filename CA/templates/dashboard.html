@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -49,35 +50,40 @@
             font-weight: bold;
             font-size: 22px;
         }
-      
+
         a {
             text-decoration: none
-
         }
+
         .col-sm-12 p {
             font-size: 12px;
             margin: 7px 16px;
         }
+
         .col-sm-12 a {
             font-size: 16px;
             margin: 12px 16px;
         }
+
         .col-sm-12 h5 .login {
             font-size: 16px;
             margin: 12px 16px;
             font-size: 19px;
             color: #01B3E4;
         }
+
         .spacing {
             display: inline-block;
             width: 100%;
         }
-        .name{
+
+        .name {
             float: left;
             color: #0F0C6E;
             font-weight: 600;
             font-size: 23px;
         }
+
         .logout {
             font-size: 23px;
             float: right;
@@ -85,6 +91,7 @@
             font-weight: 600;
             text-decoration: underline;
         }
+
         .submit {
             cursor: pointer;
             border-radius: 5em;
@@ -100,12 +107,14 @@
             box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.04);
             transition: all 0.5s cubic-bezier(0.87, 0.29, 0, 0.68);
         }
+
         .submit:hover {
             transition: all 0.5s cubic-bezier(0.87, 0.29, 0, 0.68);
             background: linear-gradient(to right, #3a0942, #0F0C6E, #3a0942);
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="heading">Referral Dashboard</div>
@@ -127,7 +136,7 @@
                 <h4>
                     {{key.link}}
                 </h4>
-                <input type="text" value={{key.link}} id="myInput" style="display: none;">                
+                <input type="text" value={{key.link}} id="myInput" style="display: none;">
                 <div class="tooltip">
                     <button class="submit" onclick="myFunction()" onmouseout="outFunc()">Copy link</button>
                 </div>
@@ -139,6 +148,13 @@
             </h3>
         </div>
 
+       
+        <div class="card">
+            <div class="sign"> Your Total Earnings = {{key.amount}}</div>
+        </div>
+
+
+
         <div class="card">
             <div class="sign">
                 Your Total referals
@@ -146,11 +162,28 @@
             <h3> Total Number of Referals = {{len}}</h3>
             {% for i in obj %}
             <h4>
-                 {{i}}
+                <div class="entries">
+                    Name : {{i.name}}
+                </div>
+                <div class="entries">
+                    Email : {{i.email}}
+                </div>
+                <div class="entries">
+                    Phone No : {{i.number}}
+                </div>
+                {% if i.ispaid == False %}
+                <div class="entries" style="color: #ff0000;">
+                    Payment Status : {{i.ispaid}}
+                </div>
+                {% else %}
+                <div class="entries" style="color: #007000;">
+                    Payment Status : {{i.ispaid}}
+                </div>
+                {% endif %}
             </h4>
             {% endfor %}
         </div>
-        
+
         {% else %}
         <a href="{% url 'CALOGIN' %}" class="nav-item nav-link">
             <i class="fas fa-sign-in-alt" style="font-size:14px; float: left; display:inline; padding: 5px 3px;">

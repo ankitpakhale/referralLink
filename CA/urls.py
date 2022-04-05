@@ -12,4 +12,5 @@ urlpatterns = [
             path('prlogout/',views.prLogOut,name='PRLOGOUT'),
             path('cadash/', views.dashboard, name='CADASHBOARD'),
             path('prdash/', views.PRdashboard, name='PRDASHBOARD'),
+
 ]
