@@ -111,7 +111,7 @@ def prSignupView(self,ref_code):
                 except:
                         d=PrsignUp.objects.get(link="http://127.0.0.1:8000/prsignup/"+ref_code)
                 print(d.id)
-                v.recommend_by=d.name
+                v.recommend_by=d.email
                 v.save()
             # --------------------------------------------------------------------------------
                 q1 = PrsignUp.objects.filter(recommend_by = d.name)
@@ -182,7 +182,7 @@ def PRdashboard(request):
         print("Inside promoter dashboard")
         try:
             nameMsg = PrsignUp.objects.get(email =  request.session['email'])  
-            obj=PrsignUp.objects.filter(recommend_by=nameMsg.name)
+            obj=PrsignUp.objects.filter(recommend_by=nameMsg.email)
             print(obj)
             due_id = PrsignUp.objects.get(id=nameMsg.id)
             newdate = datetime.today().strftime('%Y-%m-%d')
