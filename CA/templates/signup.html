@@ -7,21 +7,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CA Signup</title>
     <style>
-        :root{
+        :root {
             --dark: #0F0C6E;
             --background: #9ED8F9;
             --shade: #33FFD4;
         }
+
         body {
             font-family: 'Ubuntu', sans-serif;
             background-color: #fde6e6;
         }
-        
-        
+
+
         .main {
             width: 400px;
             background-color: #fffefe;
-                        height: auto;
+            height: auto;
             margin: 7em auto;
             padding: 1rem 0.5rem;
             margin: 7em auto;
@@ -101,11 +102,12 @@
             margin-left: 35%;
             font-size: 13px;
             box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.04);
-            transition: all 0.5s cubic-bezier(0.87, 0.29, 0, 0.68); 
+            transition: all 0.5s cubic-bezier(0.87, 0.29, 0, 0.68);
         }
+
         .submit:hover {
             transition: all 0.5s cubic-bezier(0.87, 0.29, 0, 0.68);
-            background: linear-gradient(to right,#3a0942,#0F0C6E, #3a0942);
+            background: linear-gradient(to right, #3a0942, #0F0C6E, #3a0942);
         }
 
 
@@ -137,7 +139,7 @@
             flex-direction: row;
             justify-content: space-evenly;
         } */
-    </style>    
+    </style>
 </head>
 
 <body>
@@ -151,59 +153,93 @@
             {% csrf_token %}
             <div class="col-sm-12">
                 <div class="form-group">
-                    <input id="name" type="text" name="name" class="un" class="form-control custom-form" placeholder="*Name"
-                        required="required" data-error="Name is required.">
+                    <input id="name" type="text" name="name" class="un" class="form-control custom-form"
+                        placeholder="*Name" required="required" data-error="Name is required.">
                     <div class="help-block with-errors"></div>
                 </div>
             </div>
             <div class="col-sm-12">
                 <div class="form-group">
-                    <input id="email" type="text" name="email" class="un" class="form-control custom-form" placeholder="*Email"
-                        required="required" data-error="Valid email is required.">
+                    <input id="email" type="text" name="email" class="un" class="form-control custom-form"
+                        placeholder="*Email" required="required" data-error="Valid email is required.">
                     <div class="help-block with-errors"></div>
                 </div>
             </div>
             <div class="col-sm-12">
                 <div class="form-group">
-                    <input id="num" type="number" name="number" class="un" class="form-control custom-form" placeholder="*Phone"
+                    <input id="num" type="number" name="number" class="un" class="form-control custom-form"
+                        placeholder="*Phone" required="required" data-error="Valid number is required.">
+                    <div class="help-block with-errors"></div>
+                </div>
+            </div>
+
+
+
+
+            <label>Tier 1</label>
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <input id="num" type="number" name="tier1" class="un" class="form-control custom-form"
                         required="required" data-error="Valid number is required.">
                     <div class="help-block with-errors"></div>
                 </div>
             </div>
-
-
+            <label>Percentage 1</label>
             <div class="col-sm-12">
                 <div class="form-group">
-                    <input id="num" type="number" name="number" class="un" class="form-control custom-form" value=10
-                        required="required" data-error="Valid number is required.">%
-                    <div class="help-block with-errors"></div>
-                </div>
-            </div>
-            <div class="col-sm-12">
-                <div class="form-group">
-                    <input id="num" type="number" name="number" class="un" class="form-control custom-form" value=20
-                        required="required" data-error="Valid number is required.">%
-                    <div class="help-block with-errors"></div>
-                </div>
-            </div>
-            <div class="col-sm-12">
-                <div class="form-group">
-                    <input id="num" type="number" name="number" class="un" class="form-control custom-form" value=30
-                        required="required" data-error="Valid number is required.">%
+                    <input id="num" type="number" name="percentage1" class="un" class="form-control custom-form"
+                        value=10 required="required" data-error="Valid number is required.">
                     <div class="help-block with-errors"></div>
                 </div>
             </div>
 
+            <label>Tier 2</label>
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <input id="num" type="number" name="tier2" class="un" class="form-control custom-form"
+                        required="required" data-error="Valid number is required.">
+                    <div class="help-block with-errors"></div>
+                </div>
+            </div>
+            <label>Percentage 2</label>
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <input id="num" type="number" name="percentage2" class="un" class="form-control custom-form"
+                        value=20 required="required" data-error="Valid number is required.">
+                    <div class="help-block with-errors"></div>
+                </div>
+            </div>
+
+            <label>Tier 3</label>
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <input id="num" type="number" name="tier3" class="un" class="form-control custom-form"
+                        required="required" data-error="Valid number is required.">
+                    <div class="help-block with-errors"></div>
+                </div>
+            </div>
+            <label>Percentage 3</label>
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <input id="num" type="number" name="percentage3" class="un" class="form-control custom-form"
+                        value=30 required="required" data-error="Valid number is required.">
+                    <div class="help-block with-errors"></div>
+                </div>
+            </div>
+
+
+
 
             <div class="col-sm-12">
-                <input id="address" type="address" name="address" class="un" placeholder="*Address" required="required"
+                <input id="address" type="text" name="created_by" class="un" placeholder="*Created By" required="required"
                     data-error="Valid Address is required.">
                 <div class="help-block with-errors"></div>
             </div>
-
-
-
-
+            <div class="col-sm-12">
+                <input id="address" type="text" name="address" class="un" placeholder="*Address" required="required"
+                    data-error="Valid Address is required.">
+                <div class="help-block with-errors"></div>
+            </div>
             <div class="col-sm-12">
                 <div class="form-group">
                     <input id="password" type="password" name="password" class="un" class="form-control custom-form"
@@ -213,8 +249,8 @@
             </div>
             <div class="col-sm-12">
                 <div class="form-group">
-                    <input id="password" type="password" name="confirmPassword" class="un" class="form-control custom-form"
-                        placeholder="*confirmPassword" required="required">
+                    <input id="password" type="password" name="confirmPassword" class="un"
+                        class="form-control custom-form" placeholder="*confirmPassword" required="required">
                     <div class="help-block with-errors"></div>
                 </div>
             </div>
@@ -238,10 +274,6 @@
                             Login</a>
                     </h5>
                 </div>
-
-                <!-- This is for Error Message -->
-                <h3 style="color: #ff0000;">{{msg}}</h3>
-
             </div>
 
 
@@ -249,7 +281,9 @@
 
         </form>
     </div>
-    <!-- ----------------------------------------------------- -->
+    {% if msg %}
+    <script>alert('{{msg}}')</script>
+    {% endif %}
 </body>
 
 </html>

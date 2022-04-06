@@ -132,7 +132,6 @@
             font-size: 19px;
             color: #01B3E4;
         }
-
     </style>
 </head>
 
@@ -146,15 +145,16 @@
             {% csrf_token %}
             <div class="col-sm-12">
                 <div class="form-group">
-                    <input id="email" type="text" name="email" class="un" placeholder="*Email"
-                        required="required" data-error="Valid email is required.">
+                    <input id="email" type="text" name="email" class="un" placeholder="*Email" required="required"
+                        data-error="Valid email is required.">
                     <div class="help-block with-errors"></div>
                 </div>
             </div>
 
             <div class="col-sm-12">
                 <div class="form-group">
-                    <input id="password" type="password" name="password" class="un"placeholder="*password" required="required">
+                    <input id="password" type="password" name="password" class="un" placeholder="*password"
+                        required="required">
                     <div class="help-block with-errors"></div>
                 </div>
             </div>
@@ -168,8 +168,10 @@
                 </div>
             </div>
         </form>
-
     </div>
+    {% if msg %}
+    <script>alert('{{msg}}')</script>
+    {% endif %}
 </body>
 
 </html>

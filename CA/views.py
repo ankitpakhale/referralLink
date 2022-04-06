@@ -14,24 +14,48 @@ def SignupView(self, ref_code):
         Number = self.POST['number']
         Password = self.POST['password']
         ConfirmPassword = self.POST['confirmPassword']
-        try:
-            data=CasignUp.objects.filter(email=Email)
-            if data:
-                msg = 'Email already taken'
-                return render(self , 'signup.html',{'msg':msg})
 
-            elif ConfirmPassword == Password:
-                v = CasignUp(name = Name, email = Email, number = Number, password = Password, confirmPassword = ConfirmPassword, percentage = 10)
-                # v.percentage = '10%'
-                v.save()
+        created_by = self.POST['created_by']
+
+        tier1 = self.POST['tier1']
+        tier2 = self.POST['tier2']
+        tier3 = self.POST['tier3']
+
+        percentage1 = self.POST['percentage1']
+        percentage2 = self.POST['percentage2']
+        percentage3 = self.POST['percentage3']
+
+        try:
+            data=CasignUp.objects.get(email=Email)
+            msg = 'Email already taken'
+            return render(self , 'signup.html',{'msg':msg})
+        except:
+            if ConfirmPassword == Password:
+                CasignUp.objects.create(name = Name, email = Email, number = Number, password = Password, confirmPassword = ConfirmPassword, percentage = 10)
+                data=CasignUp.objects.get(email=Email)
+                
+                Offerings.objects.create(
+                    CA = data,
+                    created_by = created_by,
+                    payment_date = datetime.today(),
+                    tier1 = tier1,
+                    tier2 = tier2,
+                    tier3 = tier3,
+                    percentage1 = percentage1,
+                    percentage2 = percentage2,
+                    percentage3 = percentage3,
+                )
+                
+                
                 return redirect('CALOGIN')
 
             else:
                 msg = 'Enter Same Password'
-                return render(self , 'signup.html',{'msg':msg}) 
-                
-        finally:
-            messages.success(self, 'Signup Successfully Done...')
+                return render(self, 'signup.html',{'msg':msg}) 
+                    
+        # except:
+        #     msg = 'Invalid Email Address'
+        #     return render(self, 'signup.html',{'msg':msg}) 
 
     return render(self,'signup.html')
 
@@ -68,7 +92,7 @@ def dashboard(request):
             nameMsg = CasignUp.objects.get(email = request.session['email'])
             print(nameMsg.link,"This is the referral link")
             # obj = giving queryset of all promoter's data
-            obj=PrsignUp.objects.filter(recommend_by=nameMsg.name)
+            obj=PrsignUp.objects.filter(recommend_by=nameMsg.email)
             newdate = datetime.today().strftime('%Y-%m-%d')
             
             amountHasToBePaid = 0
@@ -114,22 +138,19 @@ def prSignupView(self,ref_code):
                 v.recommend_by=d.email
                 v.save()
             # --------------------------------------------------------------------------------
-                q1 = PrsignUp.objects.filter(recommend_by = d.name)
+                q1 = PrsignUp.objects.filter(recommend_by = d.email)
                 d.totalNoOfReferrals = len(q1)     
                 d.save()
             # --------------------------------------------------------------------------------
-                # q1 = PrsignUp.objects.filter(recommend_by = d.name)                
-                # k = CasignUp()
-                # if q1:
-                #     k.subuser = d
-                #     k.save()
-                # return redirect('PRLOGIN',ref_code)
+              
                 return redirect('PRLOGIN')
             else:
                 msg = 'Enter Same Password'
                 return render(self , 'prsignup.html',{'msg':msg},{'ref_code':ref_code})     
-        finally:
-            messages.success(self, 'Signup Successfully Done...')
+        except:
+            msg = 'Invalid Email Address'
+            return render(self , 'prsignup.html',{'msg':msg}) 
+
     return render(self,'prsignup.html')
 
 # promoter login
@@ -245,12 +266,11 @@ def MAINDASH(request):
     li = []
     caobj =  CasignUp.objects.all()
     probj =  PrsignUp.objects.all()
+
     for i in caobj:
-        caRefCount = PrsignUp.objects.filter(recommend_by = i.name)
-        counters = 0
-        for j in caRefCount:
-            counters += 1
-        li.append(counters)
+        caRefCount = PrsignUp.objects.filter(recommend_by = i.email)
+        li.append(len(caRefCount))
+
     link  = 'http://127.0.0.1:8000/casignup/j75mnhd67v4m18r'
     
     context = {
