@@ -21,7 +21,7 @@ def SignupView(self, ref_code):
                 return render(self , 'signup.html',{'msg':msg})
 
             elif ConfirmPassword == Password:
-                v = CasignUp(name = Name, email = Email, number = Number, password = Password, confirmPassword = ConfirmPassword)
+                v = CasignUp(name = Name, email = Email, number = Number, password = Password, confirmPassword = ConfirmPassword, percentage = 10)
                 # v.percentage = '10%'
                 v.save()
                 return redirect('CALOGIN')
@@ -244,14 +244,15 @@ def PRtimeout(request):
 def MAINDASH(request):
     li = []
     caobj =  CasignUp.objects.all()
+    probj =  PrsignUp.objects.all()
     for i in caobj:
         caRefCount = PrsignUp.objects.filter(recommend_by = i.name)
         counters = 0
         for j in caRefCount:
             counters += 1
         li.append(counters)
-    probj =  PrsignUp.objects.all()
     link  = 'http://127.0.0.1:8000/casignup/j75mnhd67v4m18r'
+    
     context = {
         'caobj': caobj,
         'probj': probj,        

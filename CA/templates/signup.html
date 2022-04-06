@@ -132,9 +132,10 @@
             color: #01B3E4;
         }
 
-        /* @media (max-width: 600px) {
-        .main
-            border-radius: 0px;
+        /* .form-horizontal{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-evenly;
         } */
     </style>    
 </head>
@@ -146,7 +147,7 @@
     <div class="main">
         <p class="sign" align="center">CA Signup</p>
 
-        <form method="POST">
+        <form method="POST" class="form-horizontal">
             {% csrf_token %}
             <div class="col-sm-12">
                 <div class="form-group">
@@ -170,11 +171,37 @@
                 </div>
             </div>
 
+
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <input id="num" type="number" name="number" class="un" class="form-control custom-form" value=10
+                        required="required" data-error="Valid number is required.">%
+                    <div class="help-block with-errors"></div>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <input id="num" type="number" name="number" class="un" class="form-control custom-form" value=20
+                        required="required" data-error="Valid number is required.">%
+                    <div class="help-block with-errors"></div>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <input id="num" type="number" name="number" class="un" class="form-control custom-form" value=30
+                        required="required" data-error="Valid number is required.">%
+                    <div class="help-block with-errors"></div>
+                </div>
+            </div>
+
+
             <div class="col-sm-12">
                 <input id="address" type="address" name="address" class="un" placeholder="*Address" required="required"
                     data-error="Valid Address is required.">
                 <div class="help-block with-errors"></div>
             </div>
+
+
 
 
             <div class="col-sm-12">

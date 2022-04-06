@@ -148,7 +148,10 @@
                 </h4>
                 <input type="text" value={{link}} id="myInput" style="display: none;">
                 <div class="tooltip">
-                    <button class="submit" onclick="myFunction()" onmouseout="outFunc()">Copy link</button>
+                    <!-- <button class="submit" onclick="myFunction()" onmouseout="outFunc()">Copy link</button> -->
+                </div>
+                <div class="tooltip" style="margin: 20px 0;">
+                    <a target="_blank" href="{{link}}" style="text-decoration: none; color: #fff;" class="submit">Add CA</a>
                 </div>
             </div>
         </div>
@@ -163,20 +166,21 @@
         </div>
 
         <!-- This card is for individual CA -->
-        {% for i in caobj %}
+        {% if caobj %}
         <div class="card">
+            <div class="sign">
+                Total CA referals
+            </div>
+            <h3> Total Number of CA Referals = {{calen}}</h3>
+            {% for i in caobj %}
             <h4>
-                {{i}} Payment Due date is {{i.payment_due_date}}
-                <br>
-                
-                {% for j in li %}
-                {{i}} Total Referals are {{ j }}
-                {% endfor %}
-                
-                <br>
+                Name:{{i.name}} <br>Email: {{i}} <br>Validity :{{i.payment_due_date}}<br>
+                percentage:{{i.percentage}}%
             </h4>
+            {% endfor %}
         </div>
-        {% endfor %}
+        {% endif %}
+
 
         <!-- This card is for Promoter -->
         {% if probj %}
