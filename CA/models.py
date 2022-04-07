@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime, timedelta
+from django.utils import timezone
 from .utils import *
 
 # Create your models here.
@@ -28,6 +29,7 @@ class CasignUp(models.Model):
     number = models.PositiveIntegerField()
     password = models.CharField(default='', max_length=15)
     confirmPassword = models.CharField(default='', max_length=15)
+    address = models.CharField(default='', max_length=150)
     link=models.CharField(max_length=55,default='')
     payment_due_date = models.DateField(default=datetime.now()+timedelta(days=15))
     created_by = models.CharField(default=0, max_length=100)
@@ -50,7 +52,7 @@ class Offerings(models.Model):
     pendingAmount = models.CharField(default=0, max_length=15)
     isPaymentRecieved = models.BooleanField(default=False)
     paymentRecievedDate = models.DateTimeField(default=None, null=True, blank=True)
-    joiningDate = models.DateTimeField(default=None, null=True, blank=True)
+    joiningDate = models.DateField(default=timezone.now, null=True, blank=True)
     tierName = models.CharField(default=0, max_length=15)
     tierNo = models.PositiveIntegerField(default=0) 
     percentage = models.PositiveIntegerField(default=0)

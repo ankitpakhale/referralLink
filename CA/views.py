@@ -12,50 +12,71 @@ def SignupView(self, ref_code):
         Name = self.POST['name']
         Email = self.POST['email']
         Number = self.POST['number']
+
+        Tier1 = int(self.POST['tier1'])
+        Tier2 = int(self.POST['tier2'])
+        Tier3 = int(self.POST['tier3'])
+
+        Percentage1 = int(self.POST['percentage1'])
+        Percentage2 = int(self.POST['percentage2'])
+        Percentage3 = int(self.POST['percentage3'])
+
+        Created_by = self.POST['created_by']
+        Address = self.POST['address']
         Password = self.POST['password']
         ConfirmPassword = self.POST['confirmPassword']
-
-        created_by = self.POST['created_by']
-
-        tier1 = self.POST['tier1']
-        tier2 = self.POST['tier2']
-        tier3 = self.POST['tier3']
-
-        percentage1 = self.POST['percentage1']
-        percentage2 = self.POST['percentage2']
-        percentage3 = self.POST['percentage3']
+       
+       
 
         try:
             data=CasignUp.objects.get(email=Email)
             msg = 'Email already taken'
-            return render(self , 'signup.html',{'msg':msg})
-        except:
-            if ConfirmPassword == Password:
-                CasignUp.objects.create(name = Name, email = Email, number = Number, password = Password, confirmPassword = ConfirmPassword, percentage = 10)
-                data=CasignUp.objects.get(email=Email)
-                
-                Offerings.objects.create(
-                    CA = data,
-                    created_by = created_by,
-                    payment_date = datetime.today(),
-                    tier1 = tier1,
-                    tier2 = tier2,
-                    tier3 = tier3,
-                    percentage1 = percentage1,
-                    percentage2 = percentage2,
-                    percentage3 = percentage3,
-                )
-                
-                
-                return redirect('CALOGIN')
+            return render(self, 'signup.html',{'msg':msg})
 
-            else:
-                msg = 'Enter Same Password'
-                return render(self, 'signup.html',{'msg':msg}) 
-                    
-        # except:
-        #     msg = 'Invalid Email Address'
-        #     return render(self, 'signup.html',{'msg':msg}) 
+        except:
+            try:
+                if ConfirmPassword == Password:
+                    c = CasignUp(
+                        name = Name, 
+                        email = Email, 
+                        number = Number, 
+                        password = Password, 
+                        confirmPassword = ConfirmPassword, 
+                        address = Address,
+                        created_by = Created_by,
+                        )
+                    c.save()
+
+                    data=CasignUp.objects.get(email=Email)
+                    if Tier1 == 0:
+                        o = Offerings(CA = data, tierName = 'Tier1', tierNo = 0, percentage = Percentage1)
+                        o.save()
+                    else:
+                        msg = 'Tier 1 Should start from 0'
+                        return render(self, 'signup.html',{'msg':msg}) 
+        
+                    if Tier2 > Tier1 and Tier2 < Tier3:
+                        o = Offerings(CA = data, tierName = 'Tier2', tierNo = Tier2, percentage = Percentage2)
+                        o.save()
+                    else:
+                        msg = 'Tier 2 Should be grater then Tier 1 \n Tier 2 should be less then Tier 3'
+                        return render(self, 'signup.html',{'msg':msg}) 
+
+                    if Tier3 > Tier2 and Tier3 > Tier1:
+                        o = Offerings(CA = data, tierName = 'Tier3', tierNo = Tier3, percentage = Percentage3)
+                        o.save()
+                    else:
+                        msg = 'Tier 3 Should be grater then Tier 1 and Tier 2'
+                        return render(self, 'signup.html',{'msg':msg}) 
+
+                    return redirect('CALOGIN')
+                
+                else:
+                    msg = 'Enter Same Password'
+                    return render(self, 'signup.html',{'msg':msg}) 
+
+            except(ValueError):
+                return render(self, 'signup.html',{'msg':'Something went wrong'}) 
 
     return render(self,'signup.html')
 
@@ -81,16 +102,15 @@ def login(self):
         except:
             print("Inside first except block")
             return HttpResponse('Invalid Email ID')
-
     return render(self,'login.html')
 
 #ca dashboard
 def dashboard(request):
     if 'email' in request.session:
         try:
+            print('Dashboard TRY block')
             # nameMsg = logged in user's email
             nameMsg = CasignUp.objects.get(email = request.session['email'])
-            print(nameMsg.link,"This is the referral link")
             # obj = giving queryset of all promoter's data
             obj=PrsignUp.objects.filter(recommend_by=nameMsg.email)
             newdate = datetime.today().strftime('%Y-%m-%d')
@@ -101,7 +121,10 @@ def dashboard(request):
                     amountHasToBePaid += ((10000*20)/100)
                 else:
                     print(f"{i} user has not paid yet")
-            CasignUp.objects.filter(email = request.session['email']).update(amount = amountHasToBePaid)
+
+            print("01")
+            Offerings.objects.filter(CA=CasignUp.objects.get(email = request.session['email'])).update(totalAmount = amountHasToBePaid)
+            print("02")
 
             if newdate >= str(nameMsg.payment_due_date):
                 msg = 'Please pay the payment'

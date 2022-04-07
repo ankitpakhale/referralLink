@@ -53,8 +53,8 @@
             border: 2px solid rgba(0, 0, 0, 0.02);
             margin-bottom: 50px;
             margin-left: 46px;
-            text-align: center;
             margin-bottom: 27px;
+            text-align: center;
             font-family: 'Ubuntu', sans-serif;
             box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
         }
@@ -118,7 +118,7 @@
             text-decoration: none
         }
 
-        .col-sm-12 p {
+        .required1 {
             font-size: 12px;
             margin: 7px 16px;
         }
@@ -153,8 +153,15 @@
         .form-group {
             justify-content: center;
             align-items: center;
-            margin: auto 0;
+            margin-bottom: 10px;
+            margin-top: 10px;
         }
+        .required{
+            font-size: 12px;
+            margin: -22px 60px;
+            /* text-align: center; */
+        }
+
     </style>
 </head>
 
@@ -191,14 +198,16 @@
                 </div>
             </div>
 
-
-
             <div class="signupRow">
                 <!-- <label>Tier 1</label> -->
                 <div class="col-sm-12">
                     <div class="form-group">
-                        <input placeholder="Tier 1" id="num" type="number" name="tier1" class="un"
-                            class="form-control custom-form" required="required" data-error="Valid number is required.">
+                        <label>Tier 1</label>
+                        <input id="num" type="number" name="tier1" class="un"
+                            class="form-control custom-form" required="required" value="0" readonly="readonly">
+                            <p class="required">
+                                Note: Tier 1 Should be start from 0
+                            </p>
                         <div class="help-block with-errors"></div>
                     </div>
                 </div>
@@ -217,9 +226,13 @@
                 <!-- <label>Tier 2</label> -->
                 <div class="col-sm-12">
                     <div class="form-group">
-                        <input placeholder="Tier 2" id="num" type="number" name="tier2" class="un"
-                            class="form-control custom-form" required="required" data-error="Valid number is required.">
-                        <div class="help-block with-errors"></div>
+                        <label>Tier 2</label>
+                        <input placeholder="*Tier 2" id="num" type="number" name="tier2" class="un"
+                            class="form-control custom-form" required="required">
+                            <p class="required">
+                                Note: Tier 2 Should be grater then Tier 1, Tier 2 should be less then Tier 3
+                            </p> 
+                            <div class="help-block with-errors"></div>
                     </div>
                 </div>
                 <div class="col-sm-12">
@@ -236,9 +249,13 @@
                 <!-- <label>Tier 3</label> -->
                 <div class="col-sm-12">
                     <div class="form-group">
-                        <input placeholder="Tier 3" id="num" type="number" name="tier3" class="un"
-                            class="form-control custom-form" required="required" data-error="Valid number is required.">
-                        <div class="help-block with-errors"></div>
+                        <label>Tier 3</label>
+                        <input placeholder="*Tier 3" id="num" type="number" name="tier3" class="un"
+                            class="form-control custom-form" required="required">
+                            <p class="required">
+                                Note: Tier 3 Should be grater then Tier 1 and Tier 2
+                            </p>
+                            <div class="help-block with-errors"></div>
                     </div>
                 </div>
                 <div class="col-sm-12">
@@ -285,7 +302,7 @@
             </div>
 
             <div class="col-sm-12">
-                <p class="required">
+                <p class="required1">
                     * These fields are required.
                 </p>
                 <div class="form-group">
