@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Intelligere Dashboard</title>
+    <title>Referral Amount</title>
+
     <style>
         :root {
             --dark: #0F0C6E;
@@ -91,7 +92,6 @@
             text-decoration: underline;
         }
 
-
         .submit {
             cursor: pointer;
             border-radius: 5em;
@@ -112,92 +112,38 @@
             transition: all 0.5s cubic-bezier(0.87, 0.29, 0, 0.68);
             background: linear-gradient(to right, #3a0942, #0F0C6E, #3a0942);
         }
-
-        table {
-            border: 1px solid #000;
-        }
-
-        th {
-            border: 1px solid #ff0000;
-        }
-
-        td {
-            border: 1px solid #ff0000;
-        }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <div class="heading">Intelligere</div>
+        <div class="heading">Referral Amount</div>
+
         <div class="card">
             <div class="spacing">
                 <div class="name">Welcome {{key.name}}</div>
-                <!-- <div class="logout">
+
+                <div class="logout">
                     <a href="{% url 'CALOGOUT' %}">Logout</a>
-                </div> -->
-            </div>
-        </div>
-        <div class="card">
-            <div class="sign">
-                This is your referal link
-            </div>
-            <div class="row">
-                <h4>
-                    {{link}}
-                </h4>
-                <input type="text" value={{link}} id="myInput" style="display: none;">
-                <div class="tooltip">
-                    <!-- <button class="submit" onclick="myFunction()" onmouseout="outFunc()">Copy link</button> -->
-                </div>
-                <div class="tooltip" style="margin: 20px 0;">
-                    <a target="_blank" href="{{link}}" style="text-decoration: none; color: #fff;" class="submit">Add CA</a>
                 </div>
             </div>
         </div>
 
 
-        <!-- This card is for Total Number of CA Referals -->
         <div class="card">
-            <div class="sign">
-                Total CA referals
-                <h5> Total Number of CA Referals = {{calen}}</h5>
-            </div>
+            <div class="sign">Monthly Amount = {{key.amount}}</div>
+        </div>
+        <div class="card">
+            <div class="sign">Pending Amount = {{key.amount}}</div>
+        </div>
+        <div class="card">
+            <div class="sign">Total Amount = {{key.amount}}</div>
         </div>
 
-        <!-- This card is for individual CA -->
-        {% if caobj %}
-        <div class="card">
-            <div class="sign">
-                Total CA referals
-            </div>
-            <h3> Total Number of CA Referals = {{calen}}</h3>
-            {% for i in caobj %}
-            <h4>
-                Name:{{i.name}} <br>Email: {{i}} <br>Validity :{{i.payment_due_date}}
-            </h4>
-            {% endfor %}
-        </div>
-        {% endif %}
 
 
-        <!-- This card is for Promoter -->
-        {% if probj %}
-        <div class="card">
-            <div class="sign">
-                Total Promoter referals
-            </div>
-            <h3> Total Number of Promoter Referals = {{prlen}}</h3>
-            {% for i in probj %}
-            <h4>
-                {{i}} : {{i.payment_due_date}}
-            </h4>
-            {% endfor %}
-        </div>
-        {% endif %}
 
     </div>
-    <!-- this is the script for copying the referal link -->
     <script>
         function myFunction() {
             var copyText = document.getElementById("myInput");

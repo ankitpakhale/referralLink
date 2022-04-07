@@ -7,7 +7,7 @@ from datetime import datetime
 # Create your views here.
 
 # CA signup form
-def SignupView(self, ref_code):
+def SignupView1(self, ref_code):
     if self.POST:
         Name = self.POST['name']
         Email = self.POST['email']
@@ -25,18 +25,14 @@ def SignupView(self, ref_code):
         Address = self.POST['address']
         Password = self.POST['password']
         ConfirmPassword = self.POST['confirmPassword']
-       
-       
-
         try:
             data=CasignUp.objects.get(email=Email)
             msg = 'Email already taken'
             return render(self, 'signup.html',{'msg':msg})
-
         except:
             try:
                 if ConfirmPassword == Password:
-                    c = CasignUp(
+                    CasignUp.objects.create(
                         name = Name, 
                         email = Email, 
                         number = Number, 
@@ -44,38 +40,93 @@ def SignupView(self, ref_code):
                         confirmPassword = ConfirmPassword, 
                         address = Address,
                         created_by = Created_by,
-                        )
-                    c.save()
-
+                    )
                     data=CasignUp.objects.get(email=Email)
-                    if Tier1 == 0:
-                        o = Offerings(CA = data, tierName = 'Tier1', tierNo = 0, percentage = Percentage1)
-                        o.save()
-                    else:
+                    try:
+                        if Tier1 == 0:
+                            Offerings.objects.create(CA = data, tierName = 'Tier1', tierNo = 0, percentage = Percentage1)
+                    except:
                         msg = 'Tier 1 Should start from 0'
+                        print(msg)
                         return render(self, 'signup.html',{'msg':msg}) 
-        
-                    if Tier2 > Tier1 and Tier2 < Tier3:
-                        o = Offerings(CA = data, tierName = 'Tier2', tierNo = Tier2, percentage = Percentage2)
-                        o.save()
-                    else:
+                    
+                    try:
+                        if (Tier2 > Tier1) and (Tier2 < Tier3):
+                            Offerings.objects.create(CA = data, tierName = 'Tier2', tierNo = Tier2, percentage = Percentage2)
+                    except:
                         msg = 'Tier 2 Should be grater then Tier 1 \n Tier 2 should be less then Tier 3'
+                        print(msg)
                         return render(self, 'signup.html',{'msg':msg}) 
 
-                    if Tier3 > Tier2 and Tier3 > Tier1:
-                        o = Offerings(CA = data, tierName = 'Tier3', tierNo = Tier3, percentage = Percentage3)
-                        o.save()
-                    else:
+                    try:
+                        if (Tier3 > Tier2) and (Tier3 > Tier1):
+                            Offerings.objects.create(CA = data, tierName = 'Tier3', tierNo = Tier3, percentage = Percentage3)
+                    except:
                         msg = 'Tier 3 Should be grater then Tier 1 and Tier 2'
+                        print(msg)
                         return render(self, 'signup.html',{'msg':msg}) 
-
-                    return redirect('CALOGIN')
-                
+                    
+                    return redirect('CALOGIN')                
                 else:
                     msg = 'Enter Same Password'
+                    print(msg)
                     return render(self, 'signup.html',{'msg':msg}) 
-
             except(ValueError):
+                print("Inside value error of CA signup")
+                return render(self, 'signup.html',{'msg':'Something went wrong'}) 
+    return render(self,'signup.html')
+
+def SignupView(self, ref_code):
+    if self.POST:
+        Name = self.POST['name']
+        Email = self.POST['email']
+        Number = self.POST['number']
+        Tier1 = int(self.POST['tier1'])
+        Tier2 = int(self.POST['tier2'])
+        Tier3 = int(self.POST['tier3'])
+        Percentage1 = int(self.POST['percentage1'])
+        Percentage2 = int(self.POST['percentage2'])
+        Percentage3 = int(self.POST['percentage3'])
+        Created_by = self.POST['created_by']
+        Address = self.POST['address']
+        Password = self.POST['password']
+        ConfirmPassword = self.POST['confirmPassword']
+        try:
+            data=CasignUp.objects.get(email=Email)
+            msg = 'Email already taken'
+            return render(self, 'signup.html',{'msg':msg})
+        except:
+            try:
+                if ConfirmPassword == Password:
+                    
+                    if (Tier1 == 0) and ((Tier2 > Tier1) and (Tier2 < Tier3)) and ((Tier3 > Tier2) and (Tier3 > Tier1)):                   
+                        
+                        CasignUp.objects.create(
+                            name = Name, 
+                            email = Email, 
+                            number = Number, 
+                            password = Password, 
+                            confirmPassword = ConfirmPassword, 
+                            address = Address,
+                            created_by = Created_by,
+                        )
+
+                        data=CasignUp.objects.get(email=Email)
+                        Offerings.objects.create(CA = data, tierName = 'Tier1', tierNo = 0, percentage = Percentage1)                 
+                        Offerings.objects.create(CA = data, tierName = 'Tier2', tierNo = Tier2, percentage = Percentage2)
+                        Offerings.objects.create(CA = data, tierName = 'Tier3', tierNo = Tier3, percentage = Percentage3)
+                    else:
+                        msg = 'Please Read the Tier NOTE before entering Tier'
+                        print(msg)
+                        return render(self, 'signup.html',{'msg':msg}) 
+                    
+                    return redirect('CALOGIN')                
+                else:
+                    msg = 'Enter Same Password'
+                    print(msg)
+                    return render(self, 'signup.html',{'msg':msg}) 
+            except(ValueError):
+                print("Inside value error of CA signup")
                 return render(self, 'signup.html',{'msg':'Something went wrong'}) 
 
     return render(self,'signup.html')
@@ -98,7 +149,8 @@ def login(self):
                 # print(msg)
                 # return render(self, 'dashboard.html', {'key':nameMsg})
             else:
-                return HttpResponse('Invalid Password')
+                msg = 'Invalid Password'
+                return render(self, 'login.html',{'msg':msg}) 
         except:
             print("Inside first except block")
             return HttpResponse('Invalid Email ID')
@@ -114,22 +166,12 @@ def dashboard(request):
             # obj = giving queryset of all promoter's data
             obj=PrsignUp.objects.filter(recommend_by=nameMsg.email)
             newdate = datetime.today().strftime('%Y-%m-%d')
-            
-            amountHasToBePaid = 0
-            for i in obj:
-                if i.ispaid == True:
-                    amountHasToBePaid += ((10000*20)/100)
-                else:
-                    print(f"{i} user has not paid yet")
-
-            print("01")
-            Offerings.objects.filter(CA=CasignUp.objects.get(email = request.session['email'])).update(totalAmount = amountHasToBePaid)
-            print("02")
 
             if newdate >= str(nameMsg.payment_due_date):
                 msg = 'Please pay the payment'
             else:
                 msg = f'You can use it till {nameMsg.payment_due_date}'
+
             print("redirct")
             return render(request, 'dashboard.html', {'key':nameMsg,'obj':obj,'len':len(obj), 'time' : msg})
         except:
@@ -137,6 +179,64 @@ def dashboard(request):
             del request.session['email']
             return redirect('CALOGIN')
     return redirect('CALOGIN')
+
+def amountCalculation(request):
+    if 'email' in request.session:
+        try:
+            # print('amountCalculations TRY block')
+            nameMsg = CasignUp.objects.get(email = request.session['email'])
+            
+            obj=PrsignUp.objects.filter(recommend_by=nameMsg.email)
+            
+            offering = Offerings.objects.filter(CA=nameMsg)[0]
+            # print(offering.tierName,"husdihdsi")
+
+            newdate = datetime.today().strftime('%Y-%m-%d')
+# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+            print("01")
+            # In future we will count amountHasToBePaid as monthly amount
+            amountHasToBePaid = 0
+            for i in obj:
+                if i.ispaid == True:
+                    # tier will be calculated here according to percentage
+                    amountHasToBePaid += ((10000*offering.percentage)/100)
+                    print(amountHasToBePaid)
+                else:
+                    print(f"{i} user has not paid yet")
+            print("02")
+            # This is for Pending Amount
+            if offering.isPaymentRecieved == True:
+                offering.pendingAmount = 0
+                offering.save()
+                print("03")
+            else:
+                offering.pendingAmount = amountHasToBePaid
+                offering.save()
+                print("04")
+            print("06")
+            offering.totalAmount += amountHasToBePaid
+            offering.save()
+            print("07")
+            print(offering.totalAmount)
+            print("08")
+            print(offering.pendingAmount)
+            print("05")
+            offering.save()
+            Offerings.objects.filter(CA=nameMsg).update(totalAmount = offering.totalAmount)
+
+            # Offerings.objects.filter(CA=nameMsg).update(totalAmount = amountHasToBePaid)
+
+# -----------------------------------------------------------------------------
+
+            return render(request, 'amount.html', {'key':nameMsg})
+        except:
+            print("Inside except of dashboard section")
+            return render(request, 'amount.html',{'msg':'Something went wrong'})
+    return redirect('CALOGIN')
+
+
 
 # promoter signup
 def prSignupView(self,ref_code):
