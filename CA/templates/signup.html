@@ -20,14 +20,14 @@
 
 
         .main {
-            width: 400px;
+            width: 1000px;
             background-color: #fffefe;
             height: auto;
             margin: 7em auto;
             padding: 1rem 0.5rem;
             margin: 7em auto;
-            border-radius: 1.5em;
-            box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+            border-radius: 0.4em;
+            box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
         }
 
         .sign {
@@ -139,6 +139,21 @@
             flex-direction: row;
             justify-content: space-evenly;
         } */
+        .signupRow {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+        }
+
+        label {
+            margin: 0 0px 0px 232px;
+        }
+
+        .form-group {
+            justify-content: center;
+            align-items: center;
+            margin: auto 0;
+        }
     </style>
 </head>
 
@@ -151,107 +166,120 @@
 
         <form method="POST" class="form-horizontal">
             {% csrf_token %}
-            <div class="col-sm-12">
-                <div class="form-group">
-                    <input id="name" type="text" name="name" class="un" class="form-control custom-form"
-                        placeholder="*Name" required="required" data-error="Name is required.">
-                    <div class="help-block with-errors"></div>
+            <div class="signupRow">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input id="name" type="text" name="name" class="un" class="form-control custom-form"
+                            placeholder="*Name" required="required" data-error="Name is required.">
+                        <div class="help-block with-errors"></div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-sm-12">
-                <div class="form-group">
-                    <input id="email" type="text" name="email" class="un" class="form-control custom-form"
-                        placeholder="*Email" required="required" data-error="Valid email is required.">
-                    <div class="help-block with-errors"></div>
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input id="email" type="text" name="email" class="un" class="form-control custom-form"
+                            placeholder="*Email" required="required" data-error="Valid email is required.">
+                        <div class="help-block with-errors"></div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-sm-12">
-                <div class="form-group">
-                    <input id="num" type="number" name="number" class="un" class="form-control custom-form"
-                        placeholder="*Phone" required="required" data-error="Valid number is required.">
-                    <div class="help-block with-errors"></div>
-                </div>
-            </div>
-
-
-
-
-            <label>Tier 1</label>
-            <div class="col-sm-12">
-                <div class="form-group">
-                    <input id="num" type="number" name="tier1" class="un" class="form-control custom-form"
-                        required="required" data-error="Valid number is required.">
-                    <div class="help-block with-errors"></div>
-                </div>
-            </div>
-            <label>Percentage 1</label>
-            <div class="col-sm-12">
-                <div class="form-group">
-                    <input id="num" type="number" name="percentage1" class="un" class="form-control custom-form"
-                        value=10 required="required" data-error="Valid number is required.">
-                    <div class="help-block with-errors"></div>
-                </div>
-            </div>
-
-            <label>Tier 2</label>
-            <div class="col-sm-12">
-                <div class="form-group">
-                    <input id="num" type="number" name="tier2" class="un" class="form-control custom-form"
-                        required="required" data-error="Valid number is required.">
-                    <div class="help-block with-errors"></div>
-                </div>
-            </div>
-            <label>Percentage 2</label>
-            <div class="col-sm-12">
-                <div class="form-group">
-                    <input id="num" type="number" name="percentage2" class="un" class="form-control custom-form"
-                        value=20 required="required" data-error="Valid number is required.">
-                    <div class="help-block with-errors"></div>
-                </div>
-            </div>
-
-            <label>Tier 3</label>
-            <div class="col-sm-12">
-                <div class="form-group">
-                    <input id="num" type="number" name="tier3" class="un" class="form-control custom-form"
-                        required="required" data-error="Valid number is required.">
-                    <div class="help-block with-errors"></div>
-                </div>
-            </div>
-            <label>Percentage 3</label>
-            <div class="col-sm-12">
-                <div class="form-group">
-                    <input id="num" type="number" name="percentage3" class="un" class="form-control custom-form"
-                        value=30 required="required" data-error="Valid number is required.">
-                    <div class="help-block with-errors"></div>
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input id="num" type="number" name="number" class="un" class="form-control custom-form"
+                            placeholder="*Phone" required="required" data-error="Valid number is required.">
+                        <div class="help-block with-errors"></div>
+                    </div>
                 </div>
             </div>
 
 
 
+            <div class="signupRow">
+                <!-- <label>Tier 1</label> -->
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input placeholder="Tier 1" id="num" type="number" name="tier1" class="un"
+                            class="form-control custom-form" required="required" data-error="Valid number is required.">
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label>Percentage 1</label>
+                        <input id="num" type="number" name="percentage1" class="un" class="form-control custom-form"
+                            value=10 required="required" data-error="Valid number is required.">
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
 
-            <div class="col-sm-12">
-                <input id="address" type="text" name="created_by" class="un" placeholder="*Created By" required="required"
-                    data-error="Valid Address is required.">
-                <div class="help-block with-errors"></div>
             </div>
-            <div class="col-sm-12">
-                <input id="address" type="text" name="address" class="un" placeholder="*Address" required="required"
-                    data-error="Valid Address is required.">
-                <div class="help-block with-errors"></div>
-            </div>
-            <div class="col-sm-12">
-                <div class="form-group">
-                    <input id="password" type="password" name="password" class="un" class="form-control custom-form"
-                        placeholder="*password" required="required">
-                    <div class="help-block with-errors"></div>
+
+            <div class="signupRow">
+                <!-- <label>Tier 2</label> -->
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input placeholder="Tier 2" id="num" type="number" name="tier2" class="un"
+                            class="form-control custom-form" required="required" data-error="Valid number is required.">
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label>Percentage 2</label>
+                        <input id="num" type="number" name="percentage2" class="un" class="form-control custom-form"
+                            value=20 required="required" data-error="Valid number is required.">
+                        <div class="help-block with-errors"></div>
+                    </div>
                 </div>
             </div>
-            <div class="col-sm-12">
-                <div class="form-group">
-                    <input id="password" type="password" name="confirmPassword" class="un"
-                        class="form-control custom-form" placeholder="*confirmPassword" required="required">
-                    <div class="help-block with-errors"></div>
+
+            <div class="signupRow">
+                <!-- <label>Tier 3</label> -->
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input placeholder="Tier 3" id="num" type="number" name="tier3" class="un"
+                            class="form-control custom-form" required="required" data-error="Valid number is required.">
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label>Percentage 3</label>
+                        <input id="num" type="number" name="percentage3" class="un" class="form-control custom-form"
+                            value=30 required="required" data-error="Valid number is required.">
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="signupRow">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input id="address" type="text" name="created_by" class="un" placeholder="*Created By"
+                            required="required" data-error="Valid Address is required.">
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input id="address" type="text" name="address" class="un" placeholder="*Address"
+                            required="required" data-error="Valid Address is required.">
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="signupRow">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input id="password" type="password" name="password" class="un" class="form-control custom-form"
+                            placeholder="*password" required="required">
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <input id="password" type="password" name="confirmPassword" class="un"
+                            class="form-control custom-form" placeholder="*confirmPassword" required="required">
+                        <div class="help-block with-errors"></div>
+                    </div>
                 </div>
             </div>
 
@@ -259,7 +287,6 @@
                 <p class="required">
                     * These fields are required.
                 </p>
-
                 <div class="form-group">
                     <input class="submit" type="submit" value="Signup">
                 </div>
