@@ -184,47 +184,55 @@ def amountCalculation(request):
     if 'email' in request.session:
         try:
             # print('amountCalculations TRY block')
-            nameMsg = CasignUp.objects.get(email = request.session['email'])
+            # Access the data of logged in CA
+            nameMsg = CasignUp.objects.get(email = request.session['email'])            
             
-            obj=PrsignUp.objects.filter(recommend_by=nameMsg.email)
-            
-            offering = Offerings.objects.filter(CA=nameMsg)[0]
-            # print(offering.tierName,"husdihdsi")
+            # Promoter data of perticular CA referral
+            obj=PrsignUp.objects.filter(recommend_by=nameMsg.email)            
 
+            # Offerings fields of CA of Tier1
+            offering = Offerings.objects.filter(CA=nameMsg)[0]
+
+            # to calculate today's time
             newdate = datetime.today().strftime('%Y-%m-%d')
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------
+    # ---------Below code is to calculate Amount of each referral of CA------------
             print("01")
             # In future we will count amountHasToBePaid as monthly amount
             amountHasToBePaid = 0
             for i in obj:
                 if i.ispaid == True:
-                    # tier will be calculated here according to percentage
                     amountHasToBePaid += ((10000*offering.percentage)/100)
-                    print(amountHasToBePaid)
                 else:
                     print(f"{i} user has not paid yet")
             print("02")
+    # --------------------------------------------------------------------------
+            # if month has not been end 
+            #   offering.monthlyAmount = amountHasToBePaid
+            # else:
+            #   if (month has been end) and (offering.isPaymentRecieved == False)
+            #       offering.pendingAmount = offering.monthlyAmount
+            #   elif (month has been end) and (offering.isPaymentRecieved == True)
+            #       offering.totalAmount += offering.pendingAmount
+            #       offering.pendingAmount = 0
+
+    # ---------------1st preference to above code then below code---------------
+            
             # This is for Pending Amount
-            if offering.isPaymentRecieved == True:
-                offering.pendingAmount = 0
-                offering.save()
-                print("03")
-            else:
-                offering.pendingAmount = amountHasToBePaid
-                offering.save()
-                print("04")
-            print("06")
-            offering.totalAmount += amountHasToBePaid
-            offering.save()
-            print("07")
-            print(offering.totalAmount)
-            print("08")
-            print(offering.pendingAmount)
-            print("05")
-            offering.save()
-            Offerings.objects.filter(CA=nameMsg).update(totalAmount = offering.totalAmount)
+            # if offering.isPaymentRecieved == False:
+            #     offering.pendingAmount = amountHasToBePaid
+            #     # offering.save()
+            #     print("03")
+            # else:
+            #     offering.totalAmount += offering.pendingAmount
+            #     offering.pendingAmount = 0
+            #     offering.save()
+                # print("04")
+    # --------------------------------------------------------------------------
+            
+            
+            # Offerings.objects.filter(CA=nameMsg).update(totalAmount = offering.totalAmount)
 
             # Offerings.objects.filter(CA=nameMsg).update(totalAmount = amountHasToBePaid)
 
