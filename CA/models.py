@@ -16,6 +16,9 @@ class PrsignUp(models.Model):
     ispaid = models.BooleanField(default=False)
     isMilChukaHai = models.BooleanField(default=False)
 
+    # to check which promoter's account is received by authorized CA
+    isPaymentRecieved = models.BooleanField(default=False)
+
     def __str__(self):
         return self.email
 
@@ -35,7 +38,7 @@ class CasignUp(models.Model):
     link=models.CharField(max_length=55,default='')
     payment_due_date = models.DateField(default=datetime.now()+timedelta(days=15))
     created_by = models.CharField(default=0, max_length=100)
-    totalNoOfReferrals = models.CharField(default=0, max_length=100)
+    totalNoOfReferrals = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.email
@@ -51,7 +54,7 @@ class Offerings(models.Model):
     CA=models.ForeignKey(CasignUp,on_delete=models.CASCADE,null=True,blank=True)
     monthlyAmount = models.CharField(default=0, max_length=15)
     pendingAmount = models.CharField(default=0, max_length=15)
-    isPaymentRecieved = models.BooleanField(default=False)
+    # isPaymentRecieved = models.BooleanField(default=False)
     paymentRecievedDate = models.DateTimeField(default=None, null=True, blank=True)
     joiningDate = models.DateField(default=timezone.now, null=True, blank=True)
     tierName = models.CharField(default=0, max_length=15)

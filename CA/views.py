@@ -112,9 +112,9 @@ def SignupView(self, ref_code):
                         )
 
                         data=CasignUp.objects.get(email=Email)
-                        Offerings.objects.create(CA = data, tierName = 'Tier1', tierNo = 0, percentage = Percentage1)                 
-                        Offerings.objects.create(CA = data, tierName = 'Tier2', tierNo = Tier2, percentage = Percentage2)
-                        Offerings.objects.create(CA = data, tierName = 'Tier3', tierNo = Tier3, percentage = Percentage3)
+                        Offerings.objects.create(CA = data, tierName = 'Tier1', updatedTierNo = 0 ,    tierNo = 0, percentage = Percentage1)                 
+                        Offerings.objects.create(CA = data, tierName = 'Tier2', updatedTierNo = Tier2 ,tierNo = Tier2, percentage = Percentage2)
+                        Offerings.objects.create(CA = data, tierName = 'Tier3', updatedTierNo = Tier3 ,tierNo = Tier3, percentage = Percentage3)
                     else:
                         msg = 'Please Read the Tier NOTE before entering Tier'
                         print(msg)
@@ -194,64 +194,66 @@ def amountCalculation(request):
             offering2 = Offerings.objects.filter(CA=nameMsg, tierName='Tier2').last()
             offering3 = Offerings.objects.filter(CA=nameMsg, tierName='Tier3').last()
 
+            # print(offering1.tierNo-1)
+
             # to calculate today's time
             newdate = datetime.today().strftime('%Y-%m-%d')
     # -----------------------------------------------------------------------------
     # -----------------------------------------------------------------------------
     # ---------Below code is to calculate Amount of each referral of CA------------
-            print("01")
             # In future we will count amountHasToBePaid as monthly amount            
-    # ----------------------------------Calculating Tier wise data-------------------------------------------
-            offering1.updatedTierNo = offering1.tierNo       
-            print(f"{offering1.updatedTierNo} = {offering1.tierNo}")        #0                                       
-            offering2.updatedTierNo = offering2.tierNo                                                  
-            print(f"{offering2.updatedTierNo} = {offering2.tierNo}")        #5                                 
-            offering3.updatedTierNo = offering3.tierNo
-            print(f"{offering3.updatedTierNo} = {offering3.tierNo}")        #10                                 
+    # -----------------------------------------Calculating Tier wise data-------------------------------------------------                               
+            # if (offering1.updatedTierNo < offering2.updatedTierNo) and (offering1.isTierCompleted == False):
+                
+            #     print(offering2.updatedTierNo-offering1.updatedTierNo,"is the promoter count is left to reach tier 2") 
+            #     offering1.updatedTierNo += 1
+            #     offering1.save()
+
+            # elif (offering2.updatedTierNo < offering3.updatedTierNo) and (offering2.isTierCompleted == False):
+                
+            #     offering1.isTierCompleted = True
+            #     offering1.save()
+
+            #     print(offering3.updatedTierNo-offering2.updatedTierNo,"is the promoter count is left to reach tier 3")
+            #     offering2.updatedTierNo += 1
+            #     offering2.save()
+
+            # else:
+            #     print("Inside", offering3.updatedTierNo)
+            #     offering2.isTierCompleted = True
+            #     offering2.save()
+            #     print("On tier 3 forever")
+    # -----------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------
+            # for tier 1
+            if nameMsg.totalNoOfReferrals <= offering2.tierNo-1:
+                print("Inside Tier 1")
+
+            # for tier 2
+            elif (nameMsg.totalNoOfReferrals >= offering2.tierNo) and (nameMsg.totalNoOfReferrals <= offering3.tierNo-1):
+                print("Inside Tier 2")
             
-            if (offering1.updatedTierNo < offering2.updatedTierNo) and (offering1.isTierCompleted == False):
-                print(offering2.updatedTierNo-offering1.updatedTierNo,"is the promoter count is left to reach tier 2")
-                print("----------------")
-                print(offering1.updatedTierNo,"before")
-                offering1.updatedTierNo += 1
-                print(offering1.updatedTierNo,"after")
-                print(".............. ")
-                offering1.save()
-                print("//////////////")
-
-            elif (offering2.updatedTierNo < offering3.updatedTierNo) and (offering2.isTierCompleted == False):
-                offering1.isTierCompleted = True
-                offering1.save()
-
-                print(offering3.updatedTierNo-offering2.updatedTierNo,"is the promoter count is left to reach tier 3")
-                offering2.updatedTierNo += 1
-                offering2.save()
-
+            # for tier 3
             else:
-                offering2.isTierCompleted = True
-                offering2.save()
-                print(offering3.updatedTierNo,"is the Range of tier 3")
-                # offering3.updatedTierNo += 1
-                # offering3.save()
-                print("On tier 3 forever")
-    # ----------------------------------------------------------------------------------------------------------
-
-            amountHasToBePaid = 0
-            for i in obj:
-                if i.ispaid == True:
-                    if i.isMilChukaHai == False:
-                        amountHasToBePaid += ((10000*offering1.percentage)/100)
-                        # amountHasToBePaid += ((10000*10)/100)
-                        i.isMilChukaHai = True
-                        offering1.monthlyAmount = amountHasToBePaid
-                        # print(f"You are getting the amount of {i.name}")
-                        i.save()
-                    else:
-                        print(f"You have already got the amount of {i.name}")
-                else:
-                    print(f"{i.name} user has not paid yet")
-            print("02")
-            print(amountHasToBePaid,"Rs Got")
+                print("Inside Tier 3")
+            print('........................')   
+    
+    # --------------------------------Amount Calculations---------------------------------------------
+            # amountHasToBePaid = 0
+            # for i in obj:
+            #     if i.ispaid == True:
+            #         if i.isMilChukaHai == False:
+            #             amountHasToBePaid += ((10000*offering1.percentage)/100)
+            #             # amountHasToBePaid += ((10000*10)/100)
+            #             i.isMilChukaHai = True
+            #             offering1.monthlyAmount = amountHasToBePaid
+            #             # print(f"You are getting the amount of {i.name}")
+            #             i.save()
+            #         else:
+            #             print(f"You have already got the amount of {i.name}")
+            #     else:
+            #         print(f"{i.name} user has not paid yet")
+            # print(amountHasToBePaid,"Rs Got")
     # --------------------------------------------------------------------------
             # if month has not been end 
             #   offering.monthlyAmount = amountHasToBePaid
