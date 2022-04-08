@@ -186,12 +186,13 @@ def amountCalculation(request):
             # print('amountCalculations TRY block')
             # Access the data of logged in CA
             nameMsg = CasignUp.objects.get(email = request.session['email'])            
-            
+
             # Promoter data of perticular CA referral
             obj=PrsignUp.objects.filter(recommend_by=nameMsg.email)            
 
-            # Offerings fields of CA of Tier1
-            offering = Offerings.objects.filter(CA=nameMsg)[0]
+            offering1 = Offerings.objects.filter(CA=nameMsg, tierName='Tier1').last()
+            offering2 = Offerings.objects.filter(CA=nameMsg, tierName='Tier2').last()
+            offering3 = Offerings.objects.filter(CA=nameMsg, tierName='Tier3').last()
 
             # to calculate today's time
             newdate = datetime.today().strftime('%Y-%m-%d')
@@ -199,14 +200,58 @@ def amountCalculation(request):
     # -----------------------------------------------------------------------------
     # ---------Below code is to calculate Amount of each referral of CA------------
             print("01")
-            # In future we will count amountHasToBePaid as monthly amount
+            # In future we will count amountHasToBePaid as monthly amount            
+    # ----------------------------------Calculating Tier wise data-------------------------------------------
+            offering1.updatedTierNo = offering1.tierNo       
+            print(f"{offering1.updatedTierNo} = {offering1.tierNo}")        #0                                       
+            offering2.updatedTierNo = offering2.tierNo                                                  
+            print(f"{offering2.updatedTierNo} = {offering2.tierNo}")        #5                                 
+            offering3.updatedTierNo = offering3.tierNo
+            print(f"{offering3.updatedTierNo} = {offering3.tierNo}")        #10                                 
+            
+            if (offering1.updatedTierNo < offering2.updatedTierNo) and (offering1.isTierCompleted == False):
+                print(offering2.updatedTierNo-offering1.updatedTierNo,"is the promoter count is left to reach tier 2")
+                print("----------------")
+                print(offering1.updatedTierNo,"before")
+                offering1.updatedTierNo += 1
+                print(offering1.updatedTierNo,"after")
+                print(".............. ")
+                offering1.save()
+                print("//////////////")
+
+            elif (offering2.updatedTierNo < offering3.updatedTierNo) and (offering2.isTierCompleted == False):
+                offering1.isTierCompleted = True
+                offering1.save()
+
+                print(offering3.updatedTierNo-offering2.updatedTierNo,"is the promoter count is left to reach tier 3")
+                offering2.updatedTierNo += 1
+                offering2.save()
+
+            else:
+                offering2.isTierCompleted = True
+                offering2.save()
+                print(offering3.updatedTierNo,"is the Range of tier 3")
+                # offering3.updatedTierNo += 1
+                # offering3.save()
+                print("On tier 3 forever")
+    # ----------------------------------------------------------------------------------------------------------
+
             amountHasToBePaid = 0
             for i in obj:
                 if i.ispaid == True:
-                    amountHasToBePaid += ((10000*offering.percentage)/100)
+                    if i.isMilChukaHai == False:
+                        amountHasToBePaid += ((10000*offering1.percentage)/100)
+                        # amountHasToBePaid += ((10000*10)/100)
+                        i.isMilChukaHai = True
+                        offering1.monthlyAmount = amountHasToBePaid
+                        # print(f"You are getting the amount of {i.name}")
+                        i.save()
+                    else:
+                        print(f"You have already got the amount of {i.name}")
                 else:
-                    print(f"{i} user has not paid yet")
+                    print(f"{i.name} user has not paid yet")
             print("02")
+            print(amountHasToBePaid,"Rs Got")
     # --------------------------------------------------------------------------
             # if month has not been end 
             #   offering.monthlyAmount = amountHasToBePaid
@@ -216,7 +261,6 @@ def amountCalculation(request):
             #   elif (month has been end) and (offering.isPaymentRecieved == True)
             #       offering.totalAmount += offering.pendingAmount
             #       offering.pendingAmount = 0
-
     # ---------------1st preference to above code then below code---------------
             
             # This is for Pending Amount
@@ -238,7 +282,7 @@ def amountCalculation(request):
 
 # -----------------------------------------------------------------------------
 
-            return render(request, 'amount.html', {'key':nameMsg})
+            return render(request, 'amount.html', {'key':nameMsg, 'amountHasToBePaid': amountHasToBePaid})
         except:
             print("Inside except of dashboard section")
             return render(request, 'amount.html',{'msg':'Something went wrong'})

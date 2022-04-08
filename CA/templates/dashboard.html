@@ -142,11 +142,11 @@
                 </div>
             </div>
         </div>
-      
+
         <div class="card">
             <div class="sign">Go to <a href="{% url 'AMOUNTCALCULATION' %}">Amount Section</a></div>
         </div>
-      
+
         <div class="card">
             <h3>
                 {{time}} TIMEOUT
@@ -172,25 +172,37 @@
                 <div class="entries">
                     Phone No : {{i.number}}
                 </div>
+                <!-- promoter has paid or not after 15 days trail -->
                 {% if i.ispaid == False %}
                 <div class="entries" style="color: #ff0000;">
-                    Payment Status : {{i.ispaid}}
+                    Promoter's Payment Status : {{i.ispaid}}
                 </div>
                 {% else %}
                 <div class="entries" style="color: #007000;">
-                    Payment Status : {{i.ispaid}}
+                    Promoter's Payment Status : {{i.ispaid}}
+                </div>
+                {% endif %}
+                <!-- Got the amount of paid promoter -->
+                {% if i.isMilChukaHai == False %}
+                <div class="entries" style="color: #ff0000;">
+                    Payment Received Status : {{i.isMilChukaHai}}
+                </div>
+                {% else %}
+                <div class="entries" style="color: #007000;">
+                    Payment Received Status : {{i.isMilChukaHai}}
                 </div>
                 {% endif %}
             </h4>
             {% endfor %}
         </div>
+    </div>
 
-        {% else %}
-        <a href="{% url 'CALOGIN' %}" class="nav-item nav-link">
-            <i class="fas fa-sign-in-alt" style="font-size:14px; float: left; display:inline; padding: 5px 3px;">
-            </i> Login
-        </a>
-        {% endif %}
+    {% else %}
+    <a href="{% url 'CALOGIN' %}" class="nav-item nav-link">
+        <i class="fas fa-sign-in-alt" style="font-size:14px; float: left; display:inline; padding: 5px 3px;">
+        </i> Login
+    </a>
+    {% endif %}
     </div>
     <script>
         function myFunction() {

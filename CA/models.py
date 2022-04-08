@@ -14,6 +14,8 @@ class PrsignUp(models.Model):
     recommend_by=models.CharField(max_length=30,default='',blank=False)
     payment_due_date = models.DateField(default=datetime.now()+timedelta(days=15))
     ispaid = models.BooleanField(default=False)
+    isMilChukaHai = models.BooleanField(default=False)
+
     def __str__(self):
         return self.email
 
@@ -44,10 +46,9 @@ class CasignUp(models.Model):
         super().save(*args,**kwargs)    
 
 
-
 class Offerings(models.Model):
-    CA=models.ForeignKey(CasignUp,on_delete=models.CASCADE,null=True,blank=True)
     totalAmount = models.CharField(default=0, max_length=15)
+    CA=models.ForeignKey(CasignUp,on_delete=models.CASCADE,null=True,blank=True)
     monthlyAmount = models.CharField(default=0, max_length=15)
     pendingAmount = models.CharField(default=0, max_length=15)
     isPaymentRecieved = models.BooleanField(default=False)
@@ -57,5 +58,11 @@ class Offerings(models.Model):
     tierNo = models.PositiveIntegerField(default=0) 
     percentage = models.PositiveIntegerField(default=0)
 
+    updatedTierNo = models.PositiveIntegerField(default=0) 
+
+    isTierCompleted = models.BooleanField(default=False)
+
+
     def __str__(self):
-        return self.CA.email
+        # return self.CA.email
+        return self.tierName
