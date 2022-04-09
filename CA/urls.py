@@ -15,4 +15,6 @@ urlpatterns = [
             
             path('amount/', views.amountCalculation, name='AMOUNTCALCULATION'),
 
+            path('pbs/', views.paidBySir, name='paidBySir'),
+
 ]

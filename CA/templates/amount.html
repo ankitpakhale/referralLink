@@ -130,7 +130,13 @@
         </div>
 
         <div class="card">
-            <div class="sign">Monthly Amount = {{amountHasToBePaid}}</div>
+            {% if amount1 %}
+            <div class="sign">Monthly Amount = {{amount1}}</div>
+            {% elif amount2 %}
+            <div class="sign">Monthly Amount = {{amount2}}</div>
+            {% elif amount3 %}
+            <div class="sign">Monthly Amount = {{amount3}}</div>
+            {% endif %}
         </div>
         <div class="card">
             <div class="sign">Pending Amount = {{key.amount}}</div>
@@ -159,6 +165,11 @@
             tooltip.innerHTML = "Copy to clipboard";
         }
     </script>
+    <!-- PRINTING BACKEND MESSAGES -->
+    {% if msg %}
+    <script>alert('{{msg}}')</script>
+    {% endif %}
+
 </body>
 
 </html>

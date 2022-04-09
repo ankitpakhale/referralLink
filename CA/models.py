@@ -14,10 +14,9 @@ class PrsignUp(models.Model):
     recommend_by=models.CharField(max_length=30,default='',blank=False)
     payment_due_date = models.DateField(default=datetime.now()+timedelta(days=15))
     ispaid = models.BooleanField(default=False)
-    isMilChukaHai = models.BooleanField(default=False)
 
-    # to check which promoter's account is received by authorized CA
-    isPaymentRecieved = models.BooleanField(default=False)
+    # # to check which promoter's account is received by authorized CA
+    isAmountCalculated = models.BooleanField(default=False)
 
     def __str__(self):
         return self.email
@@ -39,6 +38,8 @@ class CasignUp(models.Model):
     payment_due_date = models.DateField(default=datetime.now()+timedelta(days=15))
     created_by = models.CharField(default=0, max_length=100)
     totalNoOfReferrals = models.PositiveIntegerField(default=0)
+    
+    totalAmount = models.PositiveIntegerField(default=0) 
 
     def __str__(self):
         return self.email
@@ -50,11 +51,15 @@ class CasignUp(models.Model):
 
 
 class Offerings(models.Model):
-    totalAmount = models.CharField(default=0, max_length=15)
+    # totalAmount = models.CharField(default=0, max_length=15)
+
+    
     CA=models.ForeignKey(CasignUp,on_delete=models.CASCADE,null=True,blank=True)
-    monthlyAmount = models.CharField(default=0, max_length=15)
-    pendingAmount = models.CharField(default=0, max_length=15)
-    # isPaymentRecieved = models.BooleanField(default=False)
+    monthlyAmount = models.PositiveIntegerField(default=0)
+    pendingAmount = models.PositiveIntegerField(default=0)
+    
+    isPaymentRecieved = models.BooleanField(default=False)
+    
     paymentRecievedDate = models.DateTimeField(default=None, null=True, blank=True)
     joiningDate = models.DateField(default=timezone.now, null=True, blank=True)
     tierName = models.CharField(default=0, max_length=15)
@@ -62,10 +67,12 @@ class Offerings(models.Model):
     percentage = models.PositiveIntegerField(default=0)
 
     updatedTierNo = models.PositiveIntegerField(default=0) 
-
     isTierCompleted = models.BooleanField(default=False)
+
+    isGivenBySir = models.BooleanField(default=False)
 
 
     def __str__(self):
         # return self.CA.email
         return self.tierName
+

@@ -172,6 +172,7 @@
                 <div class="entries">
                     Phone No : {{i.number}}
                 </div>
+
                 <!-- promoter has paid or not after 15 days trail -->
                 {% if i.ispaid == False %}
                 <div class="entries" style="color: #ff0000;">
@@ -182,16 +183,18 @@
                     Promoter's Payment Status : {{i.ispaid}}
                 </div>
                 {% endif %}
+
                 <!-- Got the amount of paid promoter -->
-                {% if i.isMilChukaHai == False %}
+                {% if i.isAmountCalculated == False %}
                 <div class="entries" style="color: #ff0000;">
-                    Payment Received Status : {{i.isMilChukaHai}}
+                    Payment Calculated : {{i.isGivenBySir}}
                 </div>
                 {% else %}
                 <div class="entries" style="color: #007000;">
-                    Payment Received Status : {{i.isMilChukaHai}}
+                    Payment Calculated : {{i.isGivenBySir}}
                 </div>
                 {% endif %}
+
             </h4>
             {% endfor %}
         </div>
