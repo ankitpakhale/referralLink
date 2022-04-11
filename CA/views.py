@@ -290,13 +290,13 @@ def amountCalculation(request):
             offering1.isTierCompleted = True
             offering1.save()
             amountHasToBePaid = 0
-            print(offering2.monthlyAmount,"This is the monthly amount of Tier2")
-            amountHasToBePaid = 0
             for i in obj:
                 if i.isAmountCalculated == False:
                     if offering2.isPaymentGivenBySir == False:
+                        
                         print("00")
                         amountHasToBePaid = ((10000*offering2.percentage)/100)
+                        print(amountHasToBePaid,"Rs is going to be save in monthly amount and pending amount")
                         print("01")
                         offering2.monthlyAmount += amountHasToBePaid
                         print("02")
@@ -307,10 +307,13 @@ def amountCalculation(request):
 
                         print("03")
                         # i.isAmountCalculated = True
+                        # PrsignUp.objects.filter(recommend_by=nameMs2000
+                        print("03")
+                        # i.isAmountCalculated = True
                         # PrsignUp.objects.filter(recommend_by=nameMsg.email, ispaid= True).update(isAmountCalculated = True)
                         PrsignUp.objects.filter(id=i.id).update(isAmountCalculated = True)                        
                         print("04")
-                        offering1.save()
+                        offering2.save()
                         print("05")
                         # i.save()
                     else:
@@ -331,15 +334,20 @@ def amountCalculation(request):
             amountHasToBePaid = 0
             for i in obj:
                 if i.isAmountCalculated == False:
-                    if offering3.isGivenBySir == False:
-                        amountHasToBePaid += ((10000*offering3.percentage)/100)
+                    if offering3.isPaymentGivenBySir == False:
+                        print("00")
+                        amountHasToBePaid = ((10000*offering3.percentage)/100)
                         print("01")
                         offering3.monthlyAmount += amountHasToBePaid
                         print("02")
-                        offering3.pendingAmount = offering3.monthlyAmount
+
+                        pendingAmount = nameMsg.pendingAmount
+                        pendingAmount += offering3.monthlyAmount
+                        CasignUp.objects.filter(email = request.session['email']).update(pendingAmount = pendingAmount)
+
                         print("03")
                         # i.isAmountCalculated = True
-                        # PrsignUp.objects.filter(recommend_by=nameMsg.email).update(isAmountCalculated = True)
+                        # PrsignUp.objects.filter(recommend_by=nameMsg.email, ispaid= True).update(isAmountCalculated = True)
                         PrsignUp.objects.filter(id=i.id).update(isAmountCalculated = True)                        
                         print("04")
                         offering3.save()
@@ -349,7 +357,7 @@ def amountCalculation(request):
                         print(f"You have already got the amount of {i.name}")
                 # else:
                 #     print(f"{i.name} user has not paid yet")
-            print(offering3.pendingAmount,"Pending Amount of tier3")
+
             print(offering3.monthlyAmount,"Monthly Amount of tier3")
 
             # c = nameMsg.totalAmount
@@ -366,9 +374,9 @@ def amountCalculation(request):
         CasignUp.objects.filter(email = request.session['email']).update(pendingAmount = totalAmountOfEachTier)
 
 
-# --------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------
     
-# ---------------------------------Update Query-----------------------------------------
+# -------------------------------------------Update Query---------------------------------------------------
         # Offerings.objects.filter(CA=nameMsg).update(totalAmount = offering.totalAmount)
 
         # Offerings.objects.filter(CA=nameMsg).update(totalAmount = amountHasToBePaid)
