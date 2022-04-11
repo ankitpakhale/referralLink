@@ -178,6 +178,10 @@ def dashboard(request):
 
 def paidBySir(request):
     if 'email' in request.session:
+
+        allCA = CasignUp.objects.all()
+        
+
         nameMsg = CasignUp.objects.get(email = request.session['email'])            
         obj=PrsignUp.objects.filter(recommend_by=nameMsg.email, ispaid = True)            
         
@@ -185,11 +189,25 @@ def paidBySir(request):
         offering2 = Offerings.objects.filter(CA=nameMsg, tierName='Tier2').last()
         offering3 = Offerings.objects.filter(CA=nameMsg, tierName='Tier3').last()
 
+        if i.isAmountCalculated == True:
+            if offering1.isPaymentGivenBySir == False:
+                offering1.isPaymentGivenBySir = True
+                return HttpResponse("Paid Successfully of Tier 1")
+        
+
+            if offering2.isPaymentGivenBySir == False:
+                offering2.isPaymentGivenBySir = True
+                return HttpResponse("Paid Successfully of Tier 2")
+
+            if offering3.isPaymentGivenBySir == False:
+                offering3.isPaymentGivenBySir = True
+                return HttpResponse("Paid Successfully of Tier 3")
+
         for i in obj:
             if i.isAmountCalculated == True:
-                i.isGivenBySir = True                
+                offering1.isPaymentGivenBySir = True                
                 # i.isPaymentRecievedFromSir = True                
-                i.save()                   
+                i.save()
                 print("Payment of Promoter",obj.name)
             return HttpResponse("Paid Successfully")
 
