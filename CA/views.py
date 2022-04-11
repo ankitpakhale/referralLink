@@ -113,23 +113,23 @@ def SignupView(self, ref_code):
                         )
 
                         data=CasignUp.objects.get(email=Email)
-                        Offerings.objects.create(CA = data, tierName = 'Tier1', updatedTierNo = 0 ,    tierNo = 0, percentage = Percentage1)                 
-                        Offerings.objects.create(CA = data, tierName = 'Tier2', updatedTierNo = Tier2 ,tierNo = Tier2, percentage = Percentage2)
-                        Offerings.objects.create(CA = data, tierName = 'Tier3', updatedTierNo = Tier3 ,tierNo = Tier3, percentage = Percentage3)
+                        Offerings.objects.create(CA = data, tierName = 'Tier1', tierNo = 0,     percentage = Percentage1)                 
+                        Offerings.objects.create(CA = data, tierName = 'Tier2', tierNo = Tier2, percentage = Percentage2)
+                        Offerings.objects.create(CA = data, tierName = 'Tier3', tierNo = Tier3, percentage = Percentage3)
                     else:
-                        msg = 'Please Read the Tier NOTE before entering Tier'
+                        msg = 'Please Read the Tier NOTE before writting Tier'
                         print(msg)
-                        return render(self, 'signup.html',{'msg':msg}) 
-                    
+                        return render(self, 'signup.html',{'msg':msg})                     
                     return redirect('CALOGIN')                
+                    
                 else:
                     msg = 'Enter Same Password'
                     print(msg)
                     return render(self, 'signup.html',{'msg':msg}) 
+
             except(ValueError):
                 print("Inside value error of CA signup")
                 return render(self, 'signup.html',{'msg':'Something went wrong'}) 
-
     return render(self,'signup.html')
 
 # ca login
@@ -142,13 +142,8 @@ def login(self):
             check = CasignUp.objects.get(email = em)
             print("Email is ",em,check.email)
             if check.password == pass1:
-                # print(check.Password)
                 self.session['email'] = check.email
                 return redirect('CADASHBOARD')
-                # nameMsg = CasignUp.objects.get(email = em)
-                # msg = 'User Successfully logged in'
-                # print(msg)
-                # return render(self, 'dashboard.html', {'key':nameMsg})
             else:
                 msg = 'Invalid Password'
                 return render(self, 'login.html',{'msg':msg}) 
@@ -156,6 +151,7 @@ def login(self):
             print("Inside first except block")
             return HttpResponse('Invalid Email ID')
     return render(self,'login.html')
+
 
 #ca dashboard
 def dashboard(request):
@@ -167,16 +163,14 @@ def dashboard(request):
             # obj = giving queryset of all promoter's data
             obj=PrsignUp.objects.filter(recommend_by=nameMsg.email)
             newdate = datetime.today().strftime('%Y-%m-%d')
-
             if newdate >= str(nameMsg.payment_due_date):
                 msg = 'Please pay the payment'
             else:
                 msg = f'You can use it till {nameMsg.payment_due_date}'
-
             print("redirct")
             return render(request, 'dashboard.html', {'key':nameMsg,'obj':obj,'len':len(obj), 'time' : msg})
         except:
-            print("Inside except of dashboard section")
+            print("Inside except of dashboard section \n logging out")
             del request.session['email']
             return redirect('CALOGIN')
     return redirect('CALOGIN')
@@ -185,21 +179,19 @@ def dashboard(request):
 def paidBySir(request):
     if 'email' in request.session:
         nameMsg = CasignUp.objects.get(email = request.session['email'])            
-        obj=PrsignUp.objects.filter(recommend_by=nameMsg.email)            
+        obj=PrsignUp.objects.filter(recommend_by=nameMsg.email, ispaid = True)            
         
         offering1 = Offerings.objects.filter(CA=nameMsg, tierName='Tier1').last()
         offering2 = Offerings.objects.filter(CA=nameMsg, tierName='Tier2').last()
         offering3 = Offerings.objects.filter(CA=nameMsg, tierName='Tier3').last()
 
         for i in obj:
-            if i.ispaid == True:
-                if i.isPaymentRecievedFromSir == False:
-                    i.isGivenBySir = True                
-                    # i.isPaymentRecievedFromSir = True                
-                    i.save()                   
-            else:
-                print(f"{i.name} user has not paid yet")
-        return HttpResponse("Paid Successfully")
+            if i.isAmountCalculated == True:
+                i.isGivenBySir = True                
+                # i.isPaymentRecievedFromSir = True                
+                i.save()                   
+                print("Payment of Promoter",obj.name)
+            return HttpResponse("Paid Successfully")
 
     return redirect('CALOGIN')
 
@@ -210,10 +202,9 @@ def amountCalculation(request):
         tier2 = False
         tier3 = False
         # try:
-        # print('amountCalculations TRY block')
-        # Access the data of logged in CA
         nameMsg = CasignUp.objects.get(email = request.session['email'])            
         print(nameMsg.totalAmount,"This is the total Amount")
+        
         # Promoter data of perticular CA referral
         obj=PrsignUp.objects.filter(recommend_by=nameMsg.email, ispaid = True)
 
@@ -238,37 +229,31 @@ def amountCalculation(request):
             tier2 = False
             tier3 = True
             print("Inside Tier 3")
-        print('........................')   
 # --------------------------------Amount Calculations For Tier1---------------------------------------------
         if tier1:
             amountHasToBePaid = 0
             for i in obj:
                 if i.isAmountCalculated == False:
-                    if offering1.isGivenBySir == False:
+                    if offering1.isPaymentGivenBySir == False:
                         print("00")
-                        amountHasToBePaid += ((10000*offering1.percentage)/100)
+                        amountHasToBePaid = ((10000*offering1.percentage)/100)
                         print("01")
                         offering1.monthlyAmount += amountHasToBePaid
                         print("02")
-
                         offering1.pendingAmount = offering1.monthlyAmount
                         print("03")
-
                         # i.isAmountCalculated = True
                         # PrsignUp.objects.filter(recommend_by=nameMsg.email, ispaid= True).update(isAmountCalculated = True)
-                        PrsignUp.objects.filter(id=i.id).update(isAmountCalculated = True)
-                        
+                        PrsignUp.objects.filter(id=i.id).update(isAmountCalculated = True)                        
                         print("04")
-
                         offering1.save()
                         print("05")
-
                         # i.save()
-
                     else:
                         print(f"You have already got the amount of {i.name}")
                 # else:
                 #     print(f"{i.name} user has not paid yet")
+
             print(offering1.pendingAmount,"Pending Amount of tier1")
             print(offering1.monthlyAmount,"Monthly Amount of tier1")
 
@@ -276,48 +261,6 @@ def amountCalculation(request):
             a +=  offering1.monthlyAmount
             CasignUp.objects.filter(email = request.session['email']).update(totalAmount = a)
 
-# --------------------------------Amount Calculations For Tier1 OLD---------------------------------------------
-        if tier1=='96':
-            amountHasToBePaid = 0
-            for i in obj:
-                if i.ispaid == True:
-                    if i.isGivenBySir == True:
-                        if i.isPaymentRecievedFromSir == False:
-                            print("------")
-                            amountHasToBePaid += ((10000*offering1.percentage)/100)
-                            print("******")
-                            # amountHasToBePaid += ((10000*10)/100)
-                            offering1.monthlyAmount = amountHasToBePaid
-                            offering1.totalAmount += offering1.monthlyAmount
-
-                            # print("77777777")
-                            # Offerings.objects.create(CA=nameMsg, monthlyAmount=amountHasToBePaid, totalAmount=offering1.monthlyAmount)
-                            # print("11111111")
-
-                            print(f"Your monthly Amount is {offering1.monthlyAmount}")
-
-                            i.isPaymentRecievedFromSir = True
-                            print("aaaa")
-                            # print(f"You are getting the amount of {i.name}")
-                            i.save()
-                            offering1.save()
-                            print("bbb")
-                    else:
-                        # print(f"You have already got the amount of {i.name}")
-                        print(f"{offering1.monthlyAmount} will be crdite of {i.name} referral")
-
-                    print("cccccc")
-                    offering1.totalAmount += offering1.monthlyAmount
-                    print("qqqqq")
-                    offering1.save()
-                    print("wwwwwwwwww")
-                else:
-                    print(f"{i.name} user has not paid yet")
-            print(f"Your Total Amount is {offering1.totalAmount}")
-
-            b = nameMsg.totalAmount
-            b +=  offering2.monthlyAmount
-            CasignUp.objects.get(email = request.session['email']).update(totalAmount = b)
 
 # --------------------------------Amount Calculations For Tier2---------------------------------------------
         # if tier2:

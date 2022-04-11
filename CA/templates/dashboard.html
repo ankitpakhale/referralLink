@@ -187,11 +187,11 @@
                 <!-- Got the amount of paid promoter -->
                 {% if i.isAmountCalculated == False %}
                 <div class="entries" style="color: #ff0000;">
-                    Payment Calculated : {{i.isGivenBySir}}
+                    Payment Calculated : False {{i.isGivenBySir}}
                 </div>
                 {% else %}
                 <div class="entries" style="color: #007000;">
-                    Payment Calculated : {{i.isGivenBySir}}
+                    Payment Calculated : True {{i.isGivenBySir}}
                 </div>
                 {% endif %}
 
