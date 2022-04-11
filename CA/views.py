@@ -177,41 +177,21 @@ def dashboard(request):
 
 
 def paidBySir(request):
-    if 'email' in request.session:
 
-        allCA = CasignUp.objects.all()
+    allCA = CasignUp.objects.all()
+    print(allCA)
+
+    # for i in allCA:
+    #     if i.isAmountCalculated == True:
+    #         offering1.isPaymentGivenBySir = True                
+    #         # i.isPaymentRecievedFromSir = True                
+    #         i.save()
+    #         print("Payment of Promoter",obj.name)
+        # return HttpResponse("Paid Successfully")
         
-
-        nameMsg = CasignUp.objects.get(email = request.session['email'])            
-        obj=PrsignUp.objects.filter(recommend_by=nameMsg.email, ispaid = True)            
-        
-        offering1 = Offerings.objects.filter(CA=nameMsg, tierName='Tier1').last()
-        offering2 = Offerings.objects.filter(CA=nameMsg, tierName='Tier2').last()
-        offering3 = Offerings.objects.filter(CA=nameMsg, tierName='Tier3').last()
-
-        if i.isAmountCalculated == True:
-            if offering1.isPaymentGivenBySir == False:
-                offering1.isPaymentGivenBySir = True
-                return HttpResponse("Paid Successfully of Tier 1")
-        
-
-            if offering2.isPaymentGivenBySir == False:
-                offering2.isPaymentGivenBySir = True
-                return HttpResponse("Paid Successfully of Tier 2")
-
-            if offering3.isPaymentGivenBySir == False:
-                offering3.isPaymentGivenBySir = True
-                return HttpResponse("Paid Successfully of Tier 3")
-
-        for i in obj:
-            if i.isAmountCalculated == True:
-                offering1.isPaymentGivenBySir = True                
-                # i.isPaymentRecievedFromSir = True                
-                i.save()
-                print("Payment of Promoter",obj.name)
-            return HttpResponse("Paid Successfully")
-
-    return redirect('CALOGIN')
+    # return HttpResponse("Paid Successfully")
+    return render(request, 'paidBySir.html', {'allCA':allCA})
+    
 
 
 def amountCalculation(request):
@@ -219,7 +199,7 @@ def amountCalculation(request):
         tier1 = False
         tier2 = False
         tier3 = False
-        totalAmountOfEachTier = 0
+        totalAmountOfEachTier = 0 
         # try:
         nameMsg = CasignUp.objects.get(email = request.session['email'])            
         print(nameMsg.totalAmount,"This is the total Amount")

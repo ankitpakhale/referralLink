@@ -39,7 +39,7 @@ class CasignUp(models.Model):
     payment_due_date = models.DateField(default=datetime.now()+timedelta(days=15))
     created_by = models.CharField(default=0, max_length=100)
     totalNoOfReferrals = models.PositiveIntegerField(default=0)
-    
+
     totalAmount = models.PositiveIntegerField(default=0) 
 
     pendingAmount = models.PositiveIntegerField(default=0)
