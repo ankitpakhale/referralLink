@@ -42,6 +42,8 @@ class CasignUp(models.Model):
     
     totalAmount = models.PositiveIntegerField(default=0) 
 
+    pendingAmount = models.PositiveIntegerField(default=0)
+
     joiningDate = models.DateField(default=timezone.now, null=True, blank=True)
 
     def __str__(self):
@@ -59,7 +61,6 @@ class Offerings(models.Model):
 
     CA=models.ForeignKey(CasignUp,on_delete=models.CASCADE,null=True,blank=True)
     monthlyAmount = models.PositiveIntegerField(default=0)
-    pendingAmount = models.PositiveIntegerField(default=0)
     
     isPaymentRecieved = models.BooleanField(default=False)
     

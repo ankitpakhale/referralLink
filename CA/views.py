@@ -201,6 +201,7 @@ def amountCalculation(request):
         tier1 = False
         tier2 = False
         tier3 = False
+        totalAmountOfEachTier = 0
         # try:
         nameMsg = CasignUp.objects.get(email = request.session['email'])            
         print(nameMsg.totalAmount,"This is the total Amount")
@@ -240,7 +241,11 @@ def amountCalculation(request):
                         print("01")
                         offering1.monthlyAmount += amountHasToBePaid
                         print("02")
-                        offering1.pendingAmount = offering1.monthlyAmount
+
+                        pendingAmount = nameMsg.pendingAmount
+                        pendingAmount += offering1.monthlyAmount
+                        CasignUp.objects.filter(email = request.session['email']).update(pendingAmount = pendingAmount)
+
                         print("03")
                         # i.isAmountCalculated = True
                         # PrsignUp.objects.filter(recommend_by=nameMsg.email, ispaid= True).update(isAmountCalculated = True)
@@ -254,12 +259,13 @@ def amountCalculation(request):
                 # else:
                 #     print(f"{i.name} user has not paid yet")
 
-            print(offering1.pendingAmount,"Pending Amount of tier1")
+
             print(offering1.monthlyAmount,"Monthly Amount of tier1")
 
-            a = nameMsg.totalAmount
-            a +=  offering1.monthlyAmount
-            CasignUp.objects.filter(email = request.session['email']).update(totalAmount = a)
+            # below code will come when sir will pay to CA
+            # a = nameMsg.totalAmount
+            # a +=  offering1.monthlyAmount
+            # CasignUp.objects.filter(email = request.session['email']).update(totalAmount = a)
 
 
 # --------------------------------Amount Calculations For Tier2---------------------------------------------
@@ -285,32 +291,38 @@ def amountCalculation(request):
             offering1.save()
             amountHasToBePaid = 0
             print(offering2.monthlyAmount,"This is the monthly amount of Tier2")
+            amountHasToBePaid = 0
             for i in obj:
                 if i.isAmountCalculated == False:
-                    if offering2.isGivenBySir == False:
-                        amountHasToBePaid += ((10000*offering2.percentage)/100)
+                    if offering2.isPaymentGivenBySir == False:
+                        print("00")
+                        amountHasToBePaid = ((10000*offering2.percentage)/100)
                         print("01")
                         offering2.monthlyAmount += amountHasToBePaid
                         print("02")
-                        offering2.pendingAmount = offering2.monthlyAmount
+
+                        pendingAmount = nameMsg.pendingAmount
+                        pendingAmount += offering2.monthlyAmount
+                        CasignUp.objects.filter(email = request.session['email']).update(pendingAmount = pendingAmount)
+
                         print("03")
                         # i.isAmountCalculated = True
-                        # PrsignUp.objects.filter(recommend_by=nameMsg.email).update(isAmountCalculated = True)
+                        # PrsignUp.objects.filter(recommend_by=nameMsg.email, ispaid= True).update(isAmountCalculated = True)
                         PrsignUp.objects.filter(id=i.id).update(isAmountCalculated = True)                        
                         print("04")
-                        offering2.save()
+                        offering1.save()
                         print("05")
                         # i.save()
                     else:
                         print(f"You have already got the amount of {i.name}")
                 # else:
                 #     print(f"{i.name} user has not paid yet")
-            print(offering2.pendingAmount,"Pending Amount of tier2")
+
             print(offering2.monthlyAmount,"Monthly Amount of tier2")
 
-            b = nameMsg.totalAmount
-            b +=  offering2.monthlyAmount
-            CasignUp.objects.filter(email = request.session['email']).update(totalAmount = b)
+            # b = nameMsg.totalAmount
+            # b +=  offering2.monthlyAmount
+            # CasignUp.objects.filter(email = request.session['email']).update(totalAmount = b)
 
 # --------------------------------Amount Calculations For Tier3---------------------------------------------
         if tier3:
@@ -340,9 +352,19 @@ def amountCalculation(request):
             print(offering3.pendingAmount,"Pending Amount of tier3")
             print(offering3.monthlyAmount,"Monthly Amount of tier3")
 
-            c = nameMsg.totalAmount
-            c +=  offering3.monthlyAmount
-            CasignUp.objects.filter(email = request.session['email']).update(totalAmount = c)
+            # c = nameMsg.totalAmount
+            # c +=  offering3.monthlyAmount
+            # CasignUp.objects.filter(email = request.session['email']).update(totalAmount = c)
+
+        print(nameMsg.pendingAmount,"Total Pending Amount") 
+
+        # monthlyAmountOfAllTiers = nameMsg.totalAmount
+        # monthlyAmountOfAllTiers +=  offering1.monthlyAmount + offering2.monthlyAmount + offering3.monthlyAmount
+        # CasignUp.objects.filter(email = request.session['email']).update(totalAmount = monthlyAmountOfAllTiers)
+
+        totalAmountOfEachTier = offering1.monthlyAmount + offering2.monthlyAmount + offering3.monthlyAmount
+        CasignUp.objects.filter(email = request.session['email']).update(pendingAmount = totalAmountOfEachTier)
+
 
 # --------------------------------------------------------------------------
     
