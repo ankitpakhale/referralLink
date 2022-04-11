@@ -364,8 +364,6 @@ def amountCalculation(request):
             # c +=  offering3.monthlyAmount
             # CasignUp.objects.filter(email = request.session['email']).update(totalAmount = c)
 
-        print(nameMsg.pendingAmount,"Total Pending Amount") 
-
         # monthlyAmountOfAllTiers = nameMsg.totalAmount
         # monthlyAmountOfAllTiers +=  offering1.monthlyAmount + offering2.monthlyAmount + offering3.monthlyAmount
         # CasignUp.objects.filter(email = request.session['email']).update(totalAmount = monthlyAmountOfAllTiers)
@@ -373,15 +371,7 @@ def amountCalculation(request):
         totalAmountOfEachTier = offering1.monthlyAmount + offering2.monthlyAmount + offering3.monthlyAmount
         CasignUp.objects.filter(email = request.session['email']).update(pendingAmount = totalAmountOfEachTier)
 
-
-# ----------------------------------------------------------------------------------------------------------
-    
-# -------------------------------------------Update Query---------------------------------------------------
-        # Offerings.objects.filter(CA=nameMsg).update(totalAmount = offering.totalAmount)
-
-        # Offerings.objects.filter(CA=nameMsg).update(totalAmount = amountHasToBePaid)
-
-# -----------------------------------------------------------------------------
+        print(nameMsg.pendingAmount,"Total Pending Amount") 
 
         return render(request, 'amount.html', {'key':nameMsg,'amount1': offering1.monthlyAmount,'amount2': offering2.monthlyAmount ,'amount3': offering3.monthlyAmount})
         # except:
