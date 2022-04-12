@@ -130,17 +130,17 @@
         </div>
 
         <div class="card">
-            {% if amount1 %}
-            <div class="sign">Monthly Amount = {{amount1}}</div>
-            {% elif amount2 %}
-            <div class="sign">Monthly Amount = {{amount2}}</div>
-            {% elif amount3 %}
-            <div class="sign">Monthly Amount = {{amount3}}</div>
-            {% endif %}
+            <div class="sign" style="color: #007000;">Tier: {{tier}}</div>
         </div>
+
+        <div class="card">
+            <div class="sign">Monthly Amount = {{monthlyAmount}}</div>       
+        </div>
+        
         <div class="card">
             <div class="sign" style="color: #ff0000;">Pending Amount = {{key.pendingAmount}}</div>
         </div>
+        
         {% if key.amount %}
         <div class="card">
             <div class="sign" style="color: #007000;">Total Amount = {{key.amount}}</div>

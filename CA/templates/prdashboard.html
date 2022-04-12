@@ -140,7 +140,7 @@
                 <h4>
                     {{key.link}}
                 </h4>
-                <input type="text" value={{key.link}} id="myInput" style="display: none;">                
+                <input type="text" value={{key.link}} id="myInput" style="display: none;">
                 <div class="tooltip">
                     <button class="submit" onclick="myFunction()" onmouseout="outFunc()">Copy link</button>
                 </div>
@@ -153,17 +153,29 @@
         </div>
 
         <div class="card">
+            <div class="sign">Payment for software</div>
+            <form method="POST">
+                {% csrf_token %}
+                <h3>
+                    <input type="submit" class="submit" value="Pay">
+                </h3>
+            </form>
+          
+        </div>
+
+
+        <div class="card">
             <div class="sign">
                 Your Total referals
             </div>
             <h3> Total Number of Referals = {{len}}</h3>
             {% for i in obj %}
             <h4>
-                 {{i}}
+                {{i}}
             </h4>
             {% endfor %}
         </div>
-        
+
         {% else %}
         <a href="{% url 'PRLOGIN' %}" class="nav-item nav-link">
             <i class="fas fa-sign-in-alt" style="font-size:14px; float: left; display:inline; padding: 5px 3px;">
@@ -187,6 +199,9 @@
                 tooltip.innerHTML = "Copy to clipboard";
             }
         </script>
+        {% if msg %}
+        <script>alert('{{msg}}')</script>
+        {% endif %}
 </body>
 
 </html>
