@@ -157,7 +157,7 @@ def login(self):
 def dashboard(request):
     if 'email' in request.session:
         try:
-            print('Dashboard TRY block')
+            print('CA Dashboard TRY block')
             # nameMsg = logged in user's email
             nameMsg = CasignUp.objects.get(email = request.session['email'])
             # obj = giving queryset of all promoter's data
@@ -240,11 +240,11 @@ def amountCalculation(request):
             for i in obj:
                 if i.isAmountCalculated == False:
                     if offering1.isPaymentGivenBySir == False:
-                        print("00")
+                        print("steps 00")
                         amountHasToBePaid = ((10000*offering1.percentage)/100)
-                        print("01")
+                        print("steps 01")
                         offering1.monthlyAmount += amountHasToBePaid
-                        print("02")
+                        print("steps 02")
 
                         monthlyAmount = offering1.monthlyAmount
 
@@ -252,13 +252,13 @@ def amountCalculation(request):
                         pendingAmount += offering1.monthlyAmount
                         CasignUp.objects.filter(email = request.session['email']).update(pendingAmount = pendingAmount)
 
-                        print("03")
+                        print("steps 03")
                         # i.isAmountCalculated = True
                         # PrsignUp.objects.filter(recommend_by=nameMsg.email, ispaid= True).update(isAmountCalculated = True)
                         PrsignUp.objects.filter(id=i.id).update(isAmountCalculated = True)                        
-                        print("04")
+                        print("steps 04")
                         offering1.save()
-                        print("05")
+                        print("steps 05")
                         # i.save()
                     else:
                         print(f"You have already got the amount of {i.name}")
@@ -331,11 +331,12 @@ def amountCalculation(request):
                 # print(monthlyAmount)
             return render(request, 'amount.html', {'key':nameMsg, 'tier':tier, 'monthlyAmount':monthlyAmount})
 
-               
+# ----------------------------------------------------------------------------------------------------------
         totalAmountOfEachTier = offering1.monthlyAmount + offering2.monthlyAmount + offering3.monthlyAmount
         CasignUp.objects.filter(email = request.session['email']).update(pendingAmount = totalAmountOfEachTier)
 
-        print(nameMsg.pendingAmount,"Total Pending Amount") 
+        print(nameMsg.monthlyAmount,"Total Monthly Amount") 
+        print(nameMsg.pendingAmount,"Total Pending Amount")
         print(nameMsg.totalAmount,"Total Amount")
 
         return render(request, 'amount.html', {'key':nameMsg, 'tier':tier, 'monthlyAmount':monthlyAmount})
@@ -446,7 +447,7 @@ def PRdashboard(request):
                 z = 'Please pay the payment'
             else:
                 z = f'You can use it till {due_id.payment_due_date}'
-            
+
             # Paying user for software
             if request.POST:
                 PrsignUp.objects.filter(email = request.session['email']).update(ispaid = True)
