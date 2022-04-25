@@ -13,7 +13,7 @@ urlpatterns = [
             path('cadash/', views.dashboard, name='CADASHBOARD'),
             path('prdash/', views.PRdashboard, name='PRDASHBOARD'),
             
-            path('amount/', views.amountCalculation, name='AMOUNTCALCULATION'),
+            path('amount/<int:id>/<str:prid>', views.amountCalculation, name='AMOUNTCALCULATION'),
 
             path('pbs/', views.paidBySir, name='paidBySir'),
 
