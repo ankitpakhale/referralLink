@@ -446,7 +446,7 @@ def PRdashboard(request):
                 z = 'Please pay the payment'
             else:
                 z = f'You can use it till {due_id.payment_due_date}'
-
+            
             # Paying user for software
             if request.POST:
                 PrsignUp.objects.filter(email = request.session['email']).update(ispaid = True)

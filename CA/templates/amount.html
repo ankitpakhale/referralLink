@@ -138,9 +138,13 @@
         </div>
         
         <div class="card">
+            {% if key.pendingAmount == 0 %}
+            <div class="sign" style="color: #007000;">Pending Amount = {{key.pendingAmount}}</div>
+            {% else %}
             <div class="sign" style="color: #ff0000;">Pending Amount = {{key.pendingAmount}}</div>
+            {% endif %}
         </div>
-        
+
         {% if key.amount %}
         <div class="card">
             <div class="sign" style="color: #007000;">Total Amount = {{key.amount}}</div>
@@ -150,9 +154,6 @@
             <div class="sign" style="color: #ff0000;">Total Amount =  Payment received yet</div>
         </div>
         {% endif %}
-
-
-
 
     </div>
     <script>
