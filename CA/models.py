@@ -40,14 +40,11 @@ class CasignUp(models.Model):
     created_by = models.CharField(default=0, max_length=100)
     totalNoOfReferrals = models.PositiveIntegerField(default=0)
     totalAmount = models.PositiveIntegerField(default=0) 
-    joiningDate = models.DateField(default=timezone.now, null=True, blank=True)
-    
+    joiningDate = models.DateField(default=timezone.now, null=True, blank=True)    
     percentage = models.PositiveIntegerField(default=0)
-
     pendingAmount = models.PositiveIntegerField(default=0)
     def __str__(self):
         return self.email
-
     def save(self,*args,**kwargs):
         code=genrated_ref_code()
         self.link="http://127.0.0.1:8000/prsignup/"+str(code)
@@ -60,6 +57,11 @@ class Offerings(models.Model):
     isPaymentRecieved = models.BooleanField(default=False)
     paymentRecievedDate = models.DateTimeField(default=None, null=True, blank=True)
     isPaymentGivenBySir = models.BooleanField(default=False)
+    isMonthCompleted = models.BooleanField(default=False)
+    objectCreatedDate = models.DateField(default=None, null=True, blank=True)
 
     def __str__(self):
         return self.CA.email
+
+
+

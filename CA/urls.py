@@ -16,5 +16,6 @@ urlpatterns = [
             path('amount/<int:id>/<str:prid>', views.amountCalculation, name='AMOUNTCALCULATION'),
 
             path('pbs/', views.paidBySir, name='paidBySir'),
+            path('newmonth/', views.newMonth, name='newMonth'),
 
 ]
