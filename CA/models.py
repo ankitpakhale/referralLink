@@ -12,10 +12,11 @@ class PrsignUp(models.Model):
     confirmPassword = models.CharField(default='', max_length=15)
     link=models.CharField(max_length=55,default='')
     recommend_by=models.CharField(max_length=30,default='',blank=False)
-    
+
     payment_due_date = models.DateField(default=datetime.now()+timedelta(days=15))
     ispaid = models.BooleanField(default=False)
 
+    totalNoOfReferrals = models.PositiveIntegerField(default=0)
     # # to check which promoter's account is received by authorized CA
     isAmountCalculated = models.BooleanField(default=False)
 

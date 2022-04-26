@@ -4,7 +4,9 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from .models import *
 from django.contrib import messages
+
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 # Create your views here.
 
 # CA signup form
@@ -91,7 +93,6 @@ def dashboard(request):
         #     CasignUp.objects.get(email = request.session['email']).update(pendingAmount = offering.monthlyAmount)
         #     offering.monthlyAmount = 0
         #     offering.save()
-
 # -------------------------------------------------------------------------------
         pendAm = nameMsg[0].pendingAmount
         totalAm = nameMsg[0].totalAmount
@@ -164,9 +165,9 @@ def prSignupView(self,ref_code):
             elif ConfirmPassword == Password:
                 v = PrsignUp(name = Name, email = Email, number = Number, password = Password, confirmPassword = ConfirmPassword)
                 try:
-                        d=CasignUp.objects.get(link="http://127.0.0.1:8000/prsignup/"+ref_code)
+                    d=CasignUp.objects.get(link="http://127.0.0.1:8000/prsignup/"+ref_code)
                 except:
-                        d=PrsignUp.objects.get(link="http://127.0.0.1:8000/prsignup/"+ref_code)
+                    d=PrsignUp.objects.get(link="http://127.0.0.1:8000/prsignup/"+ref_code)
                 print(d.id)
                 v.recommend_by=d.email
                 v.save()
@@ -175,7 +176,6 @@ def prSignupView(self,ref_code):
                 d.totalNoOfReferrals = len(q1)     
                 d.save()
             # --------------------------------------------------------------------------------
-              
                 return redirect('PRLOGIN')
             else:
                 msg = 'Enter Same Password'
@@ -183,7 +183,6 @@ def prSignupView(self,ref_code):
         except:
             msg = 'Invalid Email Address'
             return render(self , 'prsignup.html',{'msg':msg}) 
-
     return render(self,'prsignup.html')
 
 # promoter login
@@ -214,6 +213,8 @@ def PRdashboard(request):
         msg = ''
 
         nameMsg = PrsignUp.objects.filter(email =  request.session['email'])  
+        print(nameMsg)
+
         obj=PrsignUp.objects.filter(recommend_by=nameMsg[0].email)
         due_id = PrsignUp.objects.get(id=nameMsg[0].id)
 
@@ -222,24 +223,63 @@ def PRdashboard(request):
             z = 'Please pay the payment'
         else:
             z = f'You can use it till {due_id.payment_due_date}'
-
         if request.POST:
             if nameMsg[0].ispaid == False:
-                PrsignUp.objects.filter(email = request.session['email']).update(ispaid = True)
-                msg = 'Paid Successfully'
-                print(msg)
-                prid = PrsignUp.objects.filter(email =  request.session['email'])  
-                caobj = nameMsg[0].recommend_by
-                caobj = CasignUp.objects.filter(email = caobj)
-                total_referrals = caobj[0].totalNoOfReferrals
-                CasignUp.objects.filter(email = caobj[0]).update(totalNoOfReferrals = total_referrals +1)
-                return redirect('AMOUNTCALCULATION', caobj[0].id, prid[0].email)
+# ----------------------------------------------------------------------------------------------------
+                rec_obj = nameMsg[0].recommend_by
+                try:
+                    print("-----------This is the CA's block----------")
+                    rec_obj = CasignUp.objects.get(email = rec_obj)
+                    print("try block")
+                    if rec_obj:
+                        total_referrals = rec_obj.totalNoOfReferrals
+                        CasignUp.objects.filter(email = rec_obj).update(totalNoOfReferrals = total_referrals +1)
+                        PrsignUp.objects.filter(email = request.session['email']).update(ispaid = True)
+                        msg = 'Paid Successfully'
+                        print(msg)
+                        return redirect('AMOUNTCALCULATION', rec_obj[0].id, nameMsg[0].email)
+                except:
+                    print("-----------This is the user's block----------")
+                    rec_obj = PrsignUp.objects.get(email = rec_obj)
+                    print("except block")
+                    if rec_obj:
+                        total_referrals = rec_obj.totalNoOfReferrals
+                        PrsignUp.objects.filter(email = rec_obj).update(totalNoOfReferrals = total_referrals +1)
+                        PrsignUp.objects.filter(email = request.session['email']).update(ispaid = True)
+                        # print("04")
+                        # print("given_date: ",type(given_date))
+                        # print("given_date: ",given_date)
+
+                        # date_format = '%d/%m/%Y'
+                        # dtObj = datetime.strptime(given_date, date_format)
+                        # # Add 1 months to a given datetime object
+                        # n = 1
+                        # future_date = dtObj + relativedelta(months=n)
+
+                        # print('Date after 20 months: ', future_date)
+                        # print('Date after 20 months: ', future_date.date())
+
+                        # # Convert datetime object to string in required format
+                        # future_date_str = future_date.strftime(date_format)
+                        # print('Date after 20 months (as string): ', future_date_str)
+
+                        given_date = rec_obj.payment_due_date
+                        aa = PrsignUp.objects.filter(email = rec_obj).update(payment_due_date = given_date + timedelta(days=30))
+                        print(aa,"date increased---------------------")
+                        msg = 'Paid Successfully'
+                        print(msg)
+                        # return redirect('AMOUNTCALCULATION', rec_obj[0].id, nameMsg[0].email)
+
+                print(nameMsg[0], "This is the logged in user")
+                print(rec_obj, "This is the recommended user")
+                PrsignUp.objects.filter(email = request.session['email']).update(payment_due_date = given_date + timedelta(days=365))
+# ----------------------------------------------------------------------------------------------------
             else:
                 msg = 'You have already paid'
                 print(msg)
                 return render(request, 'prdashboard.html', {'key':nameMsg,'obj':obj,'len':len(obj), 'time' : z , 'msg' : msg})
         # ------------------------------------------------------------------------------------
-        return render(request, 'prdashboard.html', {'key':nameMsg,'obj':obj,'len':len(obj), 'time' : z , 'msg' : msg})
+        return render(request, 'prdashboard.html', {'key':nameMsg[0],'obj':obj,'len':len(obj), 'time' : z , 'msg' : msg})
         
 
     return redirect('PRLOGIN')
