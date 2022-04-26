@@ -84,12 +84,13 @@ def dashboard(request):
         offering = Offerings.objects.filter(CA = nameMsg[0]).last()
         current_date = datetime.today().strftime('%Y-%m-%d')
         day = datetime.now().day
-
+        print('-------------')
         if ((day == 26) and (offering.isMonthCompleted == False) and (str(offering.objectCreatedDate) != str(current_date))):
             print("redirecting to newMonth function")
             return redirect('newMonth')
         else:
             print("On same function")
+        print('-----///////-----')
 # -------------------------------------------------------------------------------
         newdate = datetime.today().strftime('%Y-%m-%d')
         if newdate >= str(nameMsg[0].payment_due_date):
@@ -186,6 +187,7 @@ def newMonth(request):
     if 'email' in request.session:
         nameMsg = CasignUp.objects.filter(email = request.session['email'])
         offering = Offerings.objects.filter(CA = nameMsg[0]).last()
+        # offering = Offerings.objects.last()
 # -------------------------------------------------------------------------
         day = datetime.now().day
         current_date = datetime.today().strftime('%Y-%m-%d')
@@ -352,15 +354,18 @@ def MAINDASH(request):
         'link' : link,
         'li' : li,
     }
-    print(li)
     # obj = CasignUp.objects.get(email = caobj[0].email)
     # print(obj)
     # print(obj.name)
     # print(obj.email)
+
+    if request.POST:
+        ca_id = request.POST['ca_id']
+        ca_ins = CasignUp.objects.get(email = ca_id)
+
+        total_amount = ca_ins.totalAmount
+        total_amount += ca_ins.pendingAmount
+        ca_ins = CasignUp.objects.filter(email = ca_id).update(totalAmount = total_amount, pendingAmount = 0)
+        print("Paid to CA Successfully")
     return render(request, 'maindash.html', context)
-
-
-
-
-
 

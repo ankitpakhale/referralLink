@@ -124,7 +124,6 @@
         td {
             border: 1px solid #ff0000;
         }
-       
     </style>
 </head>
 
@@ -153,17 +152,17 @@
                 </div>
                 <div style="display: flex;">
                     <div class="tooltip" style="margin:  0 10px 0 0;">
-                        <a target="_blank" href="{{link}}" style="text-decoration: none; color: #fff;" class="submit">Add CA</a>
+                        <a target="_blank" href="{{link}}" style="text-decoration: none; color: #fff;"
+                            class="submit">Add CA</a>
                     </div>
-                    
+
                     <div class="tooltip" style="margin: 0 0 0 10px;">
-                        <a target="_blank" href="{% url 'paidBySir' %}" style="text-decoration: none; color: #fff;" class="submit">Payment Page</a>
+                        <a target="_blank" href="{% url 'paidBySir' %}" style="text-decoration: none; color: #fff;"
+                            class="submit">Payment Page</a>
                     </div>
                 </div>
             </div>
         </div>
-
-
 
         <!-- This card is for Total Number of CA Referals -->
         <div class="card">
@@ -173,6 +172,7 @@
             </div>
         </div>
 
+
         <!-- This card is for individual CA -->
         {% if caobj %}
         <div class="card">
@@ -180,14 +180,45 @@
                 Total CA referals
             </div>
             <h3> Total Number of CA Referals = {{calen}}</h3>
-            {% for i in caobj %}
-            <h4>
-                Name:{{i.name}} <br>Email: {{i}} <br>Validity :{{i.payment_due_date}}
-            </h4> 
-            {% endfor %}
         </div>
         {% endif %}
 
+        <table>
+            <tr>
+                <div class="card">
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Validity</th>
+                    <th>PendingAmount</th>
+                    <th>Pay</th>
+                </div>
+            </tr>
+            {% for i in caobj %}
+            <tr>
+                <div class="card">
+                    <td>
+                        {{i.name}}
+                    </td>
+                    <td>
+                        {{i}}
+                    </td>
+                    <td>
+                        {{i.payment_due_date}}
+                    </td>
+                    <td>
+                        {{i.pendingAmount}}
+                    </td>
+                    <td>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" value="{{i.email}}" name="ca_id">
+                            <input type="submit" class="submit" value="PAY">
+                        </form>
+                    </td>
+                </div>
+            </tr>
+            {% endfor %}
+        </table>
 
         <!-- This card is for Promoter -->
         {% if probj %}
