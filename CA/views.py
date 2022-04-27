@@ -53,7 +53,6 @@ def SignupView(self, ref_code):
                 return render(self, 'signup.html',{'msg':'Something went wrong'}) 
     return render(self,'signup.html')
 
-
 # ca login
 def login(self):
     if self.POST:
@@ -74,25 +73,28 @@ def login(self):
             return render(self, 'login.html',{'msg':'Invalid Email ID'}) 
     return render(self,'login.html')
 
+
 #ca dashboard
 def dashboard(request):
     if 'email' in request.session:
         print('CA Dashboard TRY block')
+        current_date = datetime.today().strftime('%Y-%m-%d')
         nameMsg = CasignUp.objects.filter(email = request.session['email'])
         obj=PrsignUp.objects.filter(recommend_by=nameMsg[0].email)
-        current_date = datetime.today().strftime('%Y-%m-%d')
-# ------------------------------------getting date from front end------------------------------------------
+# -----------------------getting date from front end----------------------------
         if request.POST:
             userSelectedDate = request.POST.get('start')
             print(userSelectedDate)
+            # print(obj.joiningDate)
 # ------------------------------------------------------------------------------
+
 # ------------------------------------------------------------------------------
         for z in obj:
             if str(z.payment_due_date) >= current_date:
                 expired = False
             else:
                 expired = True
-            print(expired)
+            # print(expired)
 # ------------------------------------------------------------------------------
 # --------------------------------For New Month----------------------------------
         offering = Offerings.objects.filter(CA = nameMsg[0]).last()
