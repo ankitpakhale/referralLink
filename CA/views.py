@@ -240,7 +240,6 @@ def amountCalculation(request, id, prid):
     # pamount = CasignUp.objects.filter(email = nameMsg.email)
     # pamount = pamount[0].pendingAmount + Month_Amount
     # CasignUp.objects.filter(email = nameMsg.email).update(pendingAmount = pamount)
-    # PrsignUp.objects.filter(email = prid).update(isAmountCalculated = True)
     return redirect('PRDASHBOARD')
 
 # ----------------------------------------------------------------------------------------------------------
