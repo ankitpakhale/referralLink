@@ -84,7 +84,7 @@ def dashboard(request):
 # ------------------------------------getting date from front end------------------------------------------
         if request.POST:
             userSelectedDate = request.POST.get('start')
-
+            print(userSelectedDate)
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
         for z in obj:
