@@ -183,19 +183,18 @@
         </div>
         {% endif %}
 
-        <table>
-            <tr>
-                <div class="card">
+        <div class="card">
+            <table style="width: 100%;">
+                <tr>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Validity</th>
                     <th>PendingAmount</th>
                     <th>Pay</th>
-                </div>
-            </tr>
-            {% for i in caobj %}
-            <tr>
-                <div class="card">
+
+                </tr>
+                {% for i in caobj %}
+                <tr>
                     <td>
                         {{i.name}}
                     </td>
@@ -212,13 +211,13 @@
                         <form method="POST">
                             {% csrf_token %}
                             <input type="hidden" value="{{i.email}}" name="ca_id">
-                            <input type="submit" class="submit" value="PAY">
+                            <input type="submit" class="submit" value="Pay  {{i.pendingAmount}}/-">
                         </form>
                     </td>
-                </div>
-            </tr>
-            {% endfor %}
-        </table>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
 
         <!-- This card is for Promoter -->
         {% if probj %}

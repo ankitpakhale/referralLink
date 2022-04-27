@@ -112,6 +112,22 @@
             transition: all 0.5s cubic-bezier(0.87, 0.29, 0, 0.68);
             background: linear-gradient(to right, #3a0942, #0F0C6E, #3a0942);
         }
+
+        td,
+        th {
+            text-align: center;
+            padding: 6px;
+        }
+
+        table,
+        td,
+        th {
+            border: 1px solid #3a0942;
+        }
+
+        .entries {
+            justify-content: space-around;
+        }
     </style>
 </head>
 
@@ -119,7 +135,7 @@
     <div class="container">
         <div class="heading">Referral Dashboard</div>
         {% if key %}
-        <div class="card">
+        <!-- <div class="card">
             <div class="spacing">
                 <div class="name">Welcome {{key.name}}</div>
 
@@ -127,7 +143,7 @@
                     <a href="{% url 'CALOGOUT' %}">Logout</a>
                 </div>
             </div>
-        </div>
+        </div> -->
         <div class="card">
             <div class="sign">
                 This is your referal link
@@ -143,65 +159,86 @@
             </div>
         </div>
 
-        <div class="card">
-            <div class="sign">Go to Amount Section</div>
-            <h4>
-                <div class="entries">Pending Amount: {{pendAm}}</div>
-                <div class="entries">Monthly Amount: {{monthAm}}</div>
-                <div class="entries">Total Amount: {{totalAm}}</div>
-            </h4>
-        </div>
-
-        <div class="card">
-            <h3>
-                {{time}} TIMEOUT
-            </h3>
-        </div>
-
-
-
-
-        <div class="card">
+        <!-- <div class="card">
             <div class="sign">
                 Your Total referals
             </div>
             <h3> Total Number of Referals = {{len}}</h3>
-            {% for i in obj %}
-            <h4>
-                <div class="entries">
-                    Name : {{i.name}}
-                </div>
-                <div class="entries">
-                    Email : {{i.email}}
-                </div>
-                <div class="entries">
-                    Phone No : {{i.number}}
-                </div>
+        </div> -->
 
-                <!-- promoter has paid or not after 15 days trail -->
-                {% if i.ispaid == False %}
-                <div class="entries" style="color: #ff0000;">
-                    Promoter's Payment Status : {{i.ispaid}}
-                </div>
-                {% else %}
-                <div class="entries" style="color: #007000;">
-                    Promoter's Payment Status : {{i.ispaid}}
-                </div>
-                {% endif %}
+        <div class="card">
+            <div class="sign">
+                Month Wise Payment
+            </div>
 
-                <!-- Got the amount of paid promoter -->
-                {% if i.isAmountCalculated == False %}
-                <div class="entries" style="color: #ff0000;">
-                    Payment Calculated : False {{i.isGivenBySir}}
-                </div>
-                {% else %}
-                <div class="entries" style="color: #007000;">
-                    Payment Calculated : True {{i.isGivenBySir}}
-                </div>
-                {% endif %}
+            <div class="row" style="display: flex;">
+                <form method="POST">
+                    {% csrf_token %}
+                    <input style="margin: 0.7rem 0;" type="month" name="start" value="2022-04">
+                    <input type="submit" value="Search">
+                </form>
+                <h4 style="margin: 0.7rem 0rem 0.7rem 3rem;">Rs {{value}}</h4>
+                <!-- <h4>Rs 4000</h4> -->
+            </div>
+        </div>
 
+        <div class="card">
+            <table style="width: 100%;">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone No</th>
+                    <th>Validity</th>
+                    <th>Payment Status</th>
+                    <th>Expired Status</th>
+                </tr>
+                {% for i in obj %}
+                <tr>
+                    <td>
+                        {{i.name}}
+                    </td>
+                    <td>
+                        {{i}}
+                    </td>
+                    <td>
+                        {{i.number}}
+                    </td>
+                    <td>
+                        {{i.payment_due_date}}
+                    </td>
+                    <td>
+                        {% if i.ispaid == False %}
+                        <div style="color: #ff0000;">
+                            {{i.ispaid}}
+                        </div>
+                        {% else %}
+                        <div style="color: #007000;">
+                            {{i.ispaid}}
+                        </div>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if i.ispaid == False %}
+                        <div style="color: #007000;">
+                            {{i.ispaid}}
+                        </div>
+                        {% else %}
+                        <div style="color: #ff0000;">
+                            {{i.ispaid}}
+                        </div>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="card">
+            <div class="sign">Amount Section</div>
+            <h4 class="entries" style="display: flex;">
+                <div style="color: #ff0000;">Pending Amount: {{pendAm}}</div>
+                <div style="color: #0F0C6E;">Monthly Amount: {{monthAm}}</div>
+                <div style="color: #007000;">Total Amount: {{totalAm}}</div>
             </h4>
-            {% endfor %}
         </div>
     </div>
 

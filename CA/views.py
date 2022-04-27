@@ -2,6 +2,7 @@ from calendar import c
 import email
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
+from requests import request
 from .models import *
 from django.contrib import messages
 
@@ -73,45 +74,42 @@ def login(self):
             return render(self, 'login.html',{'msg':'Invalid Email ID'}) 
     return render(self,'login.html')
 
-
 #ca dashboard
 def dashboard(request):
     if 'email' in request.session:
         print('CA Dashboard TRY block')
         nameMsg = CasignUp.objects.filter(email = request.session['email'])
         obj=PrsignUp.objects.filter(recommend_by=nameMsg[0].email)
+        current_date = datetime.today().strftime('%Y-%m-%d')
+# ------------------------------------getting date from front end------------------------------------------
+        if request.POST:
+            userSelectedDate = request.POST.get('start')
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+        for z in obj:
+            if str(z.payment_due_date) >= current_date:
+                expired = False
+            else:
+                expired = True
+            print(expired)
+# ------------------------------------------------------------------------------
 # --------------------------------For New Month----------------------------------
         offering = Offerings.objects.filter(CA = nameMsg[0]).last()
-        current_date = datetime.today().strftime('%Y-%m-%d')
         day = datetime.now().day
-        print('-------------')
-        if ((day == 26) and (offering.isMonthCompleted == False) and (str(offering.objectCreatedDate) != str(current_date))):
+        if ((day == 28) and (offering.isMonthCompleted == False) and (str(offering.objectCreatedDate) != str(current_date))):
             print("redirecting to newMonth function")
             return redirect('newMonth')
-        else:
-            print("On same function")
-        print('-----///////-----')
 # -------------------------------------------------------------------------------
-        newdate = datetime.today().strftime('%Y-%m-%d')
-        if newdate >= str(nameMsg[0].payment_due_date):
+        if current_date >= str(nameMsg[0].payment_due_date):
             msg = 'Please pay the payment'
         else:
             msg = f'You can use it till {nameMsg[0].payment_due_date}'
-# -------------------------------------------------------------------------------
-        # offering = Offerings.objects.filter(CA = nameMsg).last()
-        # day = datetime.now().day
-        # if day == 1:
-        #     print(f"Today is 1st date of month")
-        #     CasignUp.objects.get(email = request.session['email']).update(pendingAmount = offering.monthlyAmount)
-        #     offering.monthlyAmount = 0
-        #     offering.save()
 # -------------------------------------------------------------------------------
         pendAm = nameMsg[0].pendingAmount
         totalAm = nameMsg[0].totalAmount
         am = Offerings.objects.filter(CA = nameMsg[0]).last()
         monthAm = am.monthlyAmount
-
-        print(f":::::::::: {pendAm} ::::: {monthAm} ::::: {totalAm} ::::::::::")
         return render(request, 'dashboard.html', {'key':nameMsg[0],'obj':obj,'len':len(obj), 'time' : msg, 'pendAm': pendAm, 'totalAm': totalAm, 'monthAm': monthAm})
     return redirect('CALOGIN')
 
@@ -181,34 +179,40 @@ def paidBySir(request):
     return HttpResponse("Paid Successfully")
     # return render(request, 'paidBySir.html', {'allCA':allCA})
 
-# ----------------------------------------------------------------------------------------------------------
-
+# ---------------------------------------------------------------------------------------
 def newMonth(request):
-    if 'email' in request.session:
-        nameMsg = CasignUp.objects.filter(email = request.session['email'])
-        offering = Offerings.objects.filter(CA = nameMsg[0]).last()
+    day = datetime.now().day
+    current_date = datetime.today().strftime('%Y-%m-%d')
+    allnameMsg = CasignUp.objects.all()
+    for i in allnameMsg:
+        # nameMsg = CasignUp.objects.filter(email = request.session['email'])
+        offering = Offerings.objects.filter(id = i.id).last()
+        print("**************",offering,"****************")
         # offering = Offerings.objects.last()
-# -------------------------------------------------------------------------
-        day = datetime.now().day
-        current_date = datetime.today().strftime('%Y-%m-%d')
-        print("03")
-        if ((day == 26) and (offering.isMonthCompleted == False)):
+        if ((day == 28) and (offering.isMonthCompleted == False)):
+    # -------------------------------------------------------------------------
             # if offering.isMonthCompleted == False:
             print(f"Today is 1st date of month")
-            CasignUp.objects.filter(email = request.session['email']).update(pendingAmount = offering.monthlyAmount)
-            print("06")
-            Offerings.objects.filter(CA = nameMsg[0]).update(isMonthCompleted = True)
+            CasignUp.objects.filter(id = i.id).update(pendingAmount = offering.monthlyAmount)   
+            print("06") 
+            Offerings.objects.filter(id = i.id).update(isMonthCompleted = True)
             print("07")
             # Offerings.objects.create(CA = nameMsg[0])
-            data=CasignUp.objects.get(email = request.session['email'])
+            data=CasignUp.objects.get(id = i.id)
             Offerings.objects.create(CA = data, objectCreatedDate = current_date)
-            print("08")
-    # -------------------------------------------------------------------------------------
-            return redirect('CADASHBOARD')
-        else:
-            return redirect('CADASHBOARD')
-    return redirect('PRLOGIN')
+            print(f"{i.id} is successfully done-------------------------")
 # -------------------------------------------------------------------------------------
+        else:
+            print("Today is not 28")
+    #     # return HttpResponse("Today is not 28------------")
+    # print("Today is not 28------------")
+# -------------------------------------------------------------------------------------
+day = datetime.now().day
+if day == 28:
+    print("Today is 28")
+    newMonth(request)
+# ----------------------------------------------------------------------------------------------------------
+
 # import schedule
 # import time
 # schedule.every().hour.do(newMonth)
