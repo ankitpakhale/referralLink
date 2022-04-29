@@ -87,7 +87,6 @@ def dashboard(request):
             print(userSelectedDate)
             # print(obj.joiningDate)
 # ------------------------------------------------------------------------------
-
 # ------------------------------------------------------------------------------
         for z in obj:
             if str(z.payment_due_date) >= current_date:
