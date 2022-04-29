@@ -64,44 +64,4 @@ class Offerings(models.Model):
 
     def __str__(self):
         return self.CA.email
-# types(
-#     grouping
-#     sexualAssult
-#     domestic_violance
-#     catcalling
-#     stalkinh
-#     chain_snatching/ robbary
-#     physical_assult 
-#     others
-# )
-# report_insident_to_police(
-#     yes
-#     no
-#     yes_I_will_in_future
-#     yes_I_tried
-# )
-
-
-# class harassment(models.Model):
-#     country = models.CharField(max_length=30)
-#     city = models.CharField(max_length=30)
-#     language = models.CharField(max_length=30)
-#     insident_sharing = models.CharField(max_length=30)
-#     age = models.IntegerField(max_length=30)
-#     gender = models.CharField(max_length=30)
-#     shareYourExperience = models.TextField()
-#     dateTime = models.DateTimeField()
-#     insident_place = models.CharField(max_length=30)
-#     types = models.CharField(
-#         max_length = 20,
-#         choices = types,
-#         default = '1'
-#     )
-
-#     report_insident_to_police = models.CharField(
-#         max_length = 20,
-#         choices = report_insident_to_police,
-#         default = '1'
-#     )
-
 

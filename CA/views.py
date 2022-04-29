@@ -95,11 +95,12 @@ def dashboard(request):
             else:
                 expired = True
             # print(expired)
+
 # ------------------------------------------------------------------------------
 # --------------------------------For New Month----------------------------------
         offering = Offerings.objects.filter(CA = nameMsg[0]).last()
         day = datetime.now().day
-        if ((day == 28) and (offering.isMonthCompleted == False) and (str(offering.objectCreatedDate) != str(current_date))):
+        if ((day == 29) and (offering.isMonthCompleted == False) and (str(offering.objectCreatedDate) != str(current_date))):
             print("redirecting to newMonth function")
             return redirect('newMonth')
 # -------------------------------------------------------------------------------
@@ -191,7 +192,7 @@ def newMonth(request):
         offering = Offerings.objects.filter(id = i.id).last()
         print("**************",offering,"****************")
         # offering = Offerings.objects.last()
-        if ((day == 28) and (offering.isMonthCompleted == False)):
+        if ((day == 29) and (offering.isMonthCompleted == False)):
     # -------------------------------------------------------------------------
             # if offering.isMonthCompleted == False:
             print(f"Today is 1st date of month")
@@ -205,13 +206,13 @@ def newMonth(request):
             print(f"{i.id} is successfully done-------------------------")
 # -------------------------------------------------------------------------------------
         else:
-            print("Today is not 28")
-    #     # return HttpResponse("Today is not 28------------")
-    # print("Today is not 28------------")
+            print("Today is not 29")
+    #     # return HttpResponse("Today is not 29------------")
+    # print("Today is not 29------------")
 # -------------------------------------------------------------------------------------
 day = datetime.now().day
-if day == 28:
-    print("Today is 28")
+if day == 29:
+    print("Today is 29")
     newMonth(request)
 # ----------------------------------------------------------------------------------------------------------
 
