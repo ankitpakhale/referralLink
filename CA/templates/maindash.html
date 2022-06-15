@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,7 +31,7 @@
             margin: 1.8rem auto;
             padding: 1rem 2rem;
             border-radius: 7px;
-            box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+            box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
         }
 
         .heading {
@@ -131,14 +130,12 @@
 <body>
     <div class="container">
         <div class="heading">Intelligere</div>
-
         <div class="card">
             <div class="spacing">
                 <div class="name">Welcome {{key.name}}</div>
-
-                <div class="logout">
+                <!-- <div class="logout">
                     <a href="{% url 'CALOGOUT' %}">Logout</a>
-                </div>
+                </div> -->
             </div>
         </div>
         <div class="card">
@@ -151,25 +148,76 @@
                 </h4>
                 <input type="text" value={{link}} id="myInput" style="display: none;">
                 <div class="tooltip">
-                    <button class="submit" onclick="myFunction()" onmouseout="outFunc()">Copy link</button>
+                    <!-- <button class="submit" onclick="myFunction()" onmouseout="outFunc()">Copy link</button> -->
+                </div>
+                <div style="display: flex;">
+                    <!-- <div class="tooltip" style="margin:  0 10px 0 0;">
+                        <a target="_blank" href="{{link}}" style="text-decoration: none; color: #fff;"
+                            class="submit">Add CA</a>
+                    </div> -->
+
+                    <div class="tooltip" style="margin: 0 0 0 10px;">
+                        <a target="_blank" href="{% url 'paidBySir' %}" style="text-decoration: none; color: #fff;"
+                            class="submit">Payment Page</a>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- This card is for CA -->
+        <!-- This card is for Total Number of CA Referals -->
+        <div class="card">
+            <div class="sign">
+                Total CA referals
+                <h5> Total Number of CA Referals = {{calen}}</h5>
+            </div>
+        </div>
+
+
+        <!-- This card is for individual CA -->
         {% if caobj %}
         <div class="card">
             <div class="sign">
                 Total CA referals
             </div>
             <h3> Total Number of CA Referals = {{calen}}</h3>
-            {% for i in caobj %}
-            <h4>
-                {{i}} : {{i.payment_due_date}}
-            </h4>
-            {% endfor %}
         </div>
         {% endif %}
+
+        <div class="card">
+            <table style="width: 100%;">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Validity</th>
+                    <th>PendingAmount</th>
+                    <th>Pay</th>
+
+                </tr>
+                {% for i in caobj %}
+                <tr>
+                    <td>
+                        {{i.name}}
+                    </td>
+                    <td>
+                        {{i}}
+                    </td>
+                    <td>
+                        {{i.payment_due_date}}
+                    </td>
+                    <td>
+                        {{i.pendingAmount}}
+                    </td>
+                    <td>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" value="{{i.email}}" name="ca_id">
+                            <input type="submit" class="submit" value="Pay  {{i.pendingAmount}}/-">
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
 
         <!-- This card is for Promoter -->
         {% if probj %}

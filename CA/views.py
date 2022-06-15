@@ -1,159 +1,56 @@
-import email
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
+from requests import request
 from .models import *
-from django.contrib import messages
 from datetime import datetime
-# Create your views here.
-
-# CA signup form
-def SignupView(self, ref_code):
-    if self.POST:
-        Name = self.POST['name']
-        print(Name)
-        Email = self.POST['email']
-        print(Email)
-        Number = self.POST['number']
-        print(Number)
-        Password = self.POST['password']
-        print(Password)
-        ConfirmPassword = self.POST['confirmPassword']
-        print(ConfirmPassword)
-
-        try:
-            data=CasignUp.objects.filter(email=Email)
-            if data:
-                msg = 'Email already taken'
-                return render(self , 'signup.html',{'msg':msg})
-
-            elif ConfirmPassword == Password:
-                v = CasignUp()
-                v.name = Name
-                v.email = Email
-                v.number = Number
-                v.password = Password
-                v.confirmPassword = ConfirmPassword
-                v.save()
-                return redirect('CALOGIN')
-            else:
-                msg = 'Enter Same Password'
-                return render(self , 'signup.html',{'msg':msg}) 
-                
-        finally:
-            messages.success(self, 'Signup Successfully Done...')
-
-    return render(self,'signup.html')
+import random, string
 
 
-def login(self):
-    if self.POST:
-        em = self.POST.get('email')
-        pass1 = self.POST.get('password')
-        try:
-            print("Inside first try block")
-            check = CasignUp.objects.get(email = em)
-            print("Email is ",em,check.email)
-            if check.password == pass1:
-                # print(check.Password)
-                self.session['email'] = check.email
-                # return redirect('CADASHBOARD')
-                return redirect('home')
-                # nameMsg = CasignUp.objects.get(email = em)
-                # msg = 'User Successfully logged in'
-                # print(msg)
-                # return render(self, 'dashboard.html', {'key':nameMsg})
-            else:
-                return HttpResponse('Invalid Password')
-        except:
-            print("Inside first except block")
-            return HttpResponse('Invalid Email ID')
+def genrated_ref_code():
+    code = str(''.join(random.choices(string.ascii_uppercase + string.digits, k = 12)))
+    return code
 
-    return render(self,'login.html')
-
-#ca dashboard
-def dashboard(request):
+def make_comp(request):
     if 'email' in request.session:
-        print("Inside dashboard")
-        try:
-            nameMsg = CasignUp.objects.get(email = request.session['email'])
-
-            obj=PrsignUp.objects.filter(recommend_by=nameMsg.name)
-            print(obj)
-
-            due_id = CasignUp.objects.get(id=nameMsg.id)
-            newdate = datetime.today().strftime('%Y-%m-%d')
-            print("This is new date", newdate)
-            print("This is due date",str(due_id.payment_due_date))
-            if newdate >= str(due_id.payment_due_date):
-                z = 'Please pay the payment'
-            else:
-                z = f'You can use it till {due_id.payment_due_date}'
-
-            return render(request, 'dashboard.html', {'key':nameMsg,'obj':obj,'len':len(obj), 'time' : z })
-       
-        except:
-            del request.session['email']
-            return redirect('CALOGIN')
-        
-        
-        # l=[]
-        # for i in obj:
-        #     obj1=PrsignUp.objects.filter(recommend_by=i.name)  
-        #     l.append(obj1)
-    return redirect('CALOGIN')
+        if request.POST:
+            comp = CompanyDetails(
+            owner= PrsignUp.objects.get(email= request.session['email']),
+            name = request.POST.get('comp_name'))
+            comp.save()
+        return redirect('PRDASHBOARD')
+    return redirect('PRLOGIN')
 
 
 # promoter signup
-def prSignupView(self,ref_code):
+def prSignupView(self):
+    new_code = ''
+    d = ''
     if self.POST:
-        Name = self.POST['name']
-        print(Name)
-        Email = self.POST['email']
-        print(Email)
-        Number = self.POST['number']
-        print(Number)
-        Password = self.POST['password']
-        print(Password)
-        ConfirmPassword = self.POST['confirmPassword']
-        print(ConfirmPassword)
-
+        Name = self.POST.get('name')
+        Email = self.POST.get('email')
+        ref_code = self.POST.get('ref_code')
+        Password = self.POST.get('password')
+        ConfirmPassword = self.POST.get('confirmPassword')
         try:
-            data=PrsignUp.objects.filter(email=Email)
-            if data:
-                msg = 'Email already taken'
-                return render(self , 'prsignup.html',{'msg':msg})
-
-            elif ConfirmPassword == Password:
+            data=PrsignUp.objects.get(email=Email)
+            msg = 'Email already taken'
+            return render(self , 'prsignup.html',{'msg':msg})
+        except:
+            if ConfirmPassword == Password:
                 v = PrsignUp()
-
+                try:
+                    d= PrsignUp.objects.get(ref_code= ref_code)
+                    v.recommend_by=d.email
+                except:
+                    pass
                 v.name = Name
                 v.email = Email
-                v.number = Number
                 v.password = Password
-                v.confirmPassword = ConfirmPassword
-                try:
-                        d=CasignUp.objects.get(link="http://127.0.0.1:8000/prsignup/"+ref_code)
-                except:
-                        d=PrsignUp.objects.get(link="http://127.0.0.1:8000/prsignup/"+ref_code)
-                print(d.id)
-                v.recommend_by=d.name
                 v.save()
-
-                # q1 = PrsignUp.objects.filter(recommend_by = d.name)                
-                # k = CasignUp()
-                # if q1:
-                #     k.subuser = d
-                #     k.save()
-
-                # return redirect('PRLOGIN',ref_code)
                 return redirect('PRLOGIN')
-
             else:
                 msg = 'Enter Same Password'
-                return render(self , 'prsignup.html',{'msg':msg},{'ref_code':ref_code}) 
-                
-        finally:
-            messages.success(self, 'Signup Successfully Done...')
+            return render(self , 'prsignup.html',{'msg':msg})   
     return render(self,'prsignup.html')
 
 # promoter login
@@ -164,16 +61,10 @@ def prlogin(self):
         try:
             print("Inside first try block")
             check = PrsignUp.objects.get(email = em)
-            print("Email is ",em,check.email)            
+            print("Email is ",em,check.email)
             if check.password == pass1:
                 self.session['email'] = check.email
-                # return redirect('PRDASHBOARD')
-                return redirect('home')
-                # nameMsg = PrsignUp.objects.get(email = em)
-                # msg = 'User Successfully logged in'
-                # print(msg)
-                
-                # return render(self, 'prdashboard.html', {'key':nameMsg})
+                return redirect('PRDASHBOARD')
             else:
                 return HttpResponse('Invalid Password')
         except:
@@ -181,33 +72,50 @@ def prlogin(self):
             return HttpResponse('Invalid Email ID')
     return render(self,'prlogin.html')    
 
+# ----------------------------------------------------------------------------------------------------------
 # dashboard for promoter    
 def PRdashboard(request):
     if 'email' in request.session:
         print("Inside promoter dashboard")
-        try:
-            nameMsg = PrsignUp.objects.get(email =  request.session['email'])  
-            obj=PrsignUp.objects.filter(recommend_by=nameMsg.name)
-            print(obj)
-            due_id = PrsignUp.objects.get(id=nameMsg.id)
-            newdate = datetime.today().strftime('%Y-%m-%d')
-            print("This is new date", newdate)
-            print("This is due date",str(due_id.payment_due_date))
-            if newdate >= str(due_id.payment_due_date):
-                z = 'Please pay the payment'
+        z = ''
+        msg = ''
+        main_key = PrsignUp.objects.get(email = request.session['email'])  
+        all_comp=CompanyDetails.objects.filter(owner= PrsignUp.objects.get(email = request.session['email']))
+        
+# --------------------------------------------------------------------------------------------------------------------------------
+        newdate = datetime.today().strftime('%Y-%m-%d')
+        if newdate >= str(main_key.payment_due_date):
+            z = 'Please pay the payment'
+        else:
+            z = f'You can use it till {main_key.payment_due_date}'
+# --------------------------------------------------------------------------------------------------------------------------------
+        if request.POST:
+            rec_obj = ''
+            if main_key.ispaid == False:
+# --------------------------------------------------------------------------------------------------------------------------------
+                try:
+                    rec_obj = main_key.recommend_by
+                    rec_obj = PrsignUp.objects.get(email = rec_obj)
+                    total_referrals = rec_obj.totalNoOfReferrals
+                    # PrsignUp.objects.filter(email = rec_obj).update(totalNoOfReferrals = total_referrals +1)
+                    given_date = rec_obj.payment_due_date
+                    PrsignUp.objects.filter(email = rec_obj).update(payment_due_date = given_date + timedelta(days=30))
+                    msg = 'Paid Successfully'
+                    print(msg)
+                except:
+                    pass
+                user_given_date = main_key.payment_due_date
+                if not main_key.ref_code:
+                    PrsignUp.objects.filter(email = request.session['email']).update(ref_code = genrated_ref_code())
+                PrsignUp.objects.filter(email = request.session['email']).update(ispaid = True, payment_due_date = user_given_date + timedelta(days=365))
+# --------------------------------------------------------------------------------------------------------------------------------
             else:
-                z = f'You can use it till {due_id.payment_due_date}'
-            return render(request, 'prdashboard.html', {'key':nameMsg,'obj':obj,'len':len(obj), 'time' : z })
-        except:
-            del request.session['email']
-            return redirect('PRLOGIN')             
+                msg = 'You have already paid'
+                print(msg)
+                return render(request, 'prdashboard.html', {'all_comp': all_comp, 'key':main_key, 'time' : z , 'msg' : msg})
+        # ------------------------------------------------------------------------------------
+        return render(request, 'prdashboard.html', {'all_comp': all_comp, 'main_key':main_key, 'time' : z , 'msg' : msg})
     return redirect('PRLOGIN')
-
-# ca logout
-def userLogOut(request):
-    del request.session['email']
-    print('User logged out')
-    return redirect('CALOGIN')
 
 # pr logout
 def prLogOut(request):
@@ -215,112 +123,47 @@ def prLogOut(request):
     print('User logged out')
     return redirect('PRLOGIN')    
 
-# ca timeout
-def timeout1(request):
-    if 'email' in request.session:
-        v=CasignUp.objects.get(email=request.session['email'])
-        due_id = CasignUp.objects.get(id=v.id)
-        newdate = datetime.today().strftime('%Y-%m-%d')
-        print("This is new date", newdate)
-        print("This is due date",str(due_id.payment_due_date))
-        if newdate >= str(due_id.payment_due_date):
-            return HttpResponse('Please pay the payment')
-        else:
-            return HttpResponse(f'You can use it till {due_id.payment_due_date}')
-    return redirect('CALOGIN')
-
 # pr timeout
 def PRtimeout(request):
     if 'email' in request.session:
-        
-        due_id = PrsignUp.objects.get(id=PrsignUp.objects.get(email=request.session['email']).id)
+        due_id = PrsignUp.objects.get(email=request.session['email'])
+        print(due_id, "this is the due_id1")
+
         # due_id = PrsignUp.objects.get(id=PrsignUp.objects.get(email=request.session['email']).id)
         newdate = datetime.today().strftime('%Y-%m-%d')
-        print("This is new date", newdate)
-        print("This is due date",str(due_id.payment_due_date))
+        # print("This is new date", newdate)
+        # print("This is due date",str(due_id.payment_due_date))
         if newdate >= str(due_id.payment_due_date):
-            return HttpResponse('Please pay the payment')
+            return HttpResponse(f'{due_id} Please pay the payment')
         else:
             print(f'You can use it till {due_id.payment_due_date}')
             return HttpResponse(f'You can use it till {due_id.payment_due_date}')
     return redirect('PRLOGIN')
 
 # Dashboard for main Host
-def MAINDASH(request):
-    caobj =  CasignUp.objects.all()
-    print(caobj)
-    probj =  PrsignUp.objects.all()
-    link  = 'http://127.0.0.1:8000/casignup/j75mnhd67v4m18r'
-    context = {
-        'caobj': caobj,
-        'probj': probj,        
-        'calen': len(caobj),
-        'prlen': len(probj),
-        'link' : link,
-    }
-    
-    # obj = CasignUp.objects.get(email = caobj[0].email)
-    # print(obj)
-    # print(obj.name)
-    # print(obj.email)
-    
-    return render(request, 'maindash.html', context)
+# def MAINDASH(request):
+#     li = []
+#     caobj =  CasignUp.objects.all()
+#     probj =  PrsignUp.objects.all()
+#     for i in caobj:
+#         caRefCount = PrsignUp.objects.filter(recommend_by = i.email)
+#         li.append(len(caRefCount))
+#     link  = 'http://127.0.0.1:8000/casignup/j75mnhd67v4m18r'    
+#     context = {
+#         'caobj': caobj,
+#         'probj': probj,        
+#         'calen': len(caobj),
+#         'prlen': len(probj),
+#         'link' : link,
+#         'li' : li,
+#     }
+#     if request.POST:
+#         ca_id = request.POST['ca_id']
+#         ca_ins = CasignUp.objects.get(email = ca_id)
 
-# ------------------------------------------------------------------------------------------------
+#         total_amount = ca_ins.totalAmount
+#         total_amount += ca_ins.pendingAmount
+#         ca_ins = CasignUp.objects.filter(email = ca_id).update(totalAmount = total_amount, pendingAmount = 0)
+#         print("Paid to CA Successfully")
+#     return render(request, 'maindash.html', context)
 
-
-def hello(request):
-    return HttpResponse("Hello User!")
-
-def login1(request):
-    return render(request,'login1.html')
-
-def signup1(request):
-    return render(request,'signup1.html')
-
-def forget(request):
-    return render(request,'forget.html')
-
-def index(request):
-    return render(request,'index.html')
-
-def myprofile(request):
-    return render(request,'myprofile.html')
-
-# def home(request):
-#     if 'email' in request.session: 
-#         ca = ''
-#         pr = ''
-#         try: 
-#             ca = CasignUp.objects.get(email=request.session['email'])
-#         except:
-#             pr = PrsignUp.objects.get(email=request.session['email'])
-#         return render(request, 'home.html', {'ca': ca, 'pr': pr})
-
-def home(request):
-    if 'email' in request.session:        
-        ca = CasignUp.objects.filter(email=request.session['email'])
-        pr = PrsignUp.objects.filter(email=request.session['email'])
-        return render(request, 'home.html', {'ca': ca, 'pr': pr})
-    
-
-def contact(request):
-    key = ''
-    if request.method == 'POST':
-        db = ContactForm(fname = request.POST.get('first-name'),
-                            lname = request.POST.get('last-name'), 
-                            email = request.POST.get('email'), 
-                            number = request.POST.get('phone'), 
-                            details = request.POST.get('message')
-                        )
-        db.save()
-        key = "Your Message has been sent successfully"
-    return render(request, 'contact.html', {'msg': key})
-
-
-
-def blog(request):
-    return render(request, 'blog.html')
-
-def faq(request):
-    return render(request, 'FAQ.html')
