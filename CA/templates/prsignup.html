@@ -142,56 +142,50 @@
 </head>
 
 <body>
-
-    <!-- ------------------------------------------------------->
-    <!-- CONTACT FORM START -->
     <div class="main">
         <p class="sign" align="center">SignUp for promoter</p>
-
         <form method="POST">
             {% csrf_token %}
-
             <div class="col-sm-12">
                 <div class="form-group">
                     <input id="name" type="text" name="name" class="un" class="form-control custom-form"
-                        placeholder="*Name" required="required" data-error="Name is required.">
-                    <div class="help-block with-errors"></div>
+                        placeholder="*Name">
                 </div>
             </div>
             <div class="col-sm-12">
                 <div class="form-group">
                     <input id="email" type="text" name="email" class="un" class="form-control custom-form"
-                        placeholder="*Email" required="required" data-error="Valid email is required.">
-                    <div class="help-block with-errors"></div>
+                        placeholder="*Email">
                 </div>
             </div>
             <div class="col-sm-12">
                 <div class="form-group">
+                    <input type="text" name="ref_code" class="un" class="form-control custom-form"
+                        placeholder="Referal Code">
+                </div>
+            </div>
+            <!-- <div class="col-sm-12">
+                <div class="form-group">
                     <input id="num" type="number" name="number" class="un" class="form-control custom-form"
-                        placeholder="*Phone" required="required" data-error="Valid number is required.">
-                    <div class="help-block with-errors"></div>
+                        placeholder="*Phone">
                 </div>
             </div>
 
             <div class="col-sm-12">
-                <input id="address" type="address" name="address" class="un" placeholder="*Address" required="required"
-                    data-error="Valid Address is required.">
-                <div class="help-block with-errors"></div>
+                <input id="address" type="address" name="address" class="un" placeholder="*Address">
             </div>
-
+ -->
 
             <div class="col-sm-12">
                 <div class="form-group">
                     <input id="password" type="password" name="password" class="un" class="form-control custom-form"
-                        placeholder="*password" required="required">
-                    <div class="help-block with-errors"></div>
+                        placeholder="*password">
                 </div>
             </div>
             <div class="col-sm-12">
                 <div class="form-group">
                     <input id="password" type="password" name="confirmPassword" class="un"
-                        class="form-control custom-form" placeholder="*confirmPassword" required="required">
-                    <div class="help-block with-errors"></div>
+                        class="form-control custom-form" placeholder="*confirmPassword">
                 </div>
             </div>
 
@@ -199,7 +193,6 @@
                 <p class="required">
                     * These fields are required.
                 </p>
-
                 <div class="form-group">
                     <input class="submit" type="submit" value="Signup">
                 </div>
