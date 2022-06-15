@@ -1,56 +1,154 @@
+from calendar import c
+import email
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from requests import request
 from .models import *
+from django.contrib import messages
+
 from datetime import datetime
-import random, string
+from dateutil.relativedelta import relativedelta
+# Create your views here.
+
+# CA signup form
+def SignupView(self, ref_code):
+    if self.POST:
+        Name = self.POST['name']
+        Email = self.POST['email']
+        Number = self.POST['number']
+
+        Percentage = int(self.POST['percentage'])
+
+        Created_by = self.POST['created_by']
+        Address = self.POST['address']
+        Password = self.POST['password']
+        ConfirmPassword = self.POST['confirmPassword']
+        current_date = datetime.today().strftime('%Y-%m-%d')
+        try:
+            data=CasignUp.objects.get(email=Email)
+            msg = 'Email already taken'
+            return render(self, 'signup.html',{'msg':msg})
+        except:
+            try:
+                if ConfirmPassword == Password:
+                    CasignUp.objects.create(
+                        name = Name,
+                        email = Email, 
+                        number = Number, 
+                        password = Password, 
+                        confirmPassword = ConfirmPassword, 
+                        address = Address,
+                        created_by = Created_by,
+                        percentage = Percentage,
+                    )
+                    data=CasignUp.objects.get(email=Email)
+                    Offerings.objects.create(CA = data, objectCreatedDate = current_date)
+                    return redirect('CALOGIN')                
+                else:
+                    msg = 'Enter Same Password'
+                    print(msg)
+                    return render(self, 'signup.html',{'msg':msg}) 
+            except:
+                print("Inside except of CA signup")
+                return render(self, 'signup.html',{'msg':'Something went wrong'}) 
+    return render(self,'signup.html')
+
+# ca login
+def login(self):
+    if self.POST:
+        em = self.POST.get('email')
+        pass1 = self.POST.get('password')
+        try:
+            print("Inside first try block")
+            check = CasignUp.objects.get(email = em)
+            print("Email is ",em,check.email)
+            if check.password == pass1:
+                self.session['email'] = check.email
+                return redirect('CADASHBOARD')
+            else:
+                msg = 'Invalid Password'
+                return render(self, 'login.html',{'msg':msg}) 
+        except:
+            print("Inside first except block")
+            return render(self, 'login.html',{'msg':'Invalid Email ID'}) 
+    return render(self,'login.html')
 
 
-def genrated_ref_code():
-    code = str(''.join(random.choices(string.ascii_uppercase + string.digits, k = 12)))
-    return code
-
-def make_comp(request):
+#ca dashboard
+def dashboard(request):
     if 'email' in request.session:
+        print('CA Dashboard TRY block')
+        current_date = datetime.today().strftime('%Y-%m-%d')
+        nameMsg = CasignUp.objects.filter(email = request.session['email'])
+        obj=PrsignUp.objects.filter(recommend_by=nameMsg[0].email)
+# -----------------------getting date from front end----------------------------
         if request.POST:
-            comp = CompanyDetails(
-            owner= PrsignUp.objects.get(email= request.session['email']),
-            name = request.POST.get('comp_name'))
-            comp.save()
-        return redirect('PRDASHBOARD')
-    return redirect('PRLOGIN')
+            userSelectedDate = request.POST.get('start')
+            print(userSelectedDate)
+            # print(obj.joiningDate)
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+        for z in obj:
+            if str(z.payment_due_date) >= current_date:
+                expired = False
+            else:
+                expired = True
+            # print(expired)
 
+# ------------------------------------------------------------------------------
+# --------------------------------For New Month----------------------------------
+        offering = Offerings.objects.filter(CA = nameMsg[0]).last()
+        day = datetime.now().day
+        if ((day == 29) and (offering.isMonthCompleted == False) and (str(offering.objectCreatedDate) != str(current_date))):
+            print("redirecting to newMonth function")
+            return redirect('newMonth')
+# -------------------------------------------------------------------------------
+        if current_date >= str(nameMsg[0].payment_due_date):
+            msg = 'Please pay the payment'
+        else:
+            msg = f'You can use it till {nameMsg[0].payment_due_date}'
+# -------------------------------------------------------------------------------
+        pendAm = nameMsg[0].pendingAmount
+        totalAm = nameMsg[0].totalAmount
+        am = Offerings.objects.filter(CA = nameMsg[0]).last()
+        monthAm = am.monthlyAmount
+        return render(request, 'dashboard.html', {'key':nameMsg[0],'obj':obj,'len':len(obj), 'time' : msg, 'pendAm': pendAm, 'totalAm': totalAm, 'monthAm': monthAm})
+    return redirect('CALOGIN')
 
 # promoter signup
-def prSignupView(self):
-    new_code = ''
-    d = ''
+def prSignupView(self,ref_code):
     if self.POST:
-        Name = self.POST.get('name')
-        Email = self.POST.get('email')
-        ref_code = self.POST.get('ref_code')
-        Password = self.POST.get('password')
-        ConfirmPassword = self.POST.get('confirmPassword')
+        Name = self.POST['name']
+        Email = self.POST['email']
+        Number = self.POST['number']
+        Password = self.POST['password']
+        ConfirmPassword = self.POST['confirmPassword']
         try:
-            data=PrsignUp.objects.get(email=Email)
-            msg = 'Email already taken'
-            return render(self , 'prsignup.html',{'msg':msg})
-        except:
-            if ConfirmPassword == Password:
-                v = PrsignUp()
+            data=PrsignUp.objects.filter(email=Email)
+            if data:
+                msg = 'Email already taken'
+                return render(self , 'prsignup.html',{'msg':msg})
+            elif ConfirmPassword == Password:
+                v = PrsignUp(name = Name, email = Email, number = Number, password = Password, confirmPassword = ConfirmPassword)
                 try:
-                    d= PrsignUp.objects.get(ref_code= ref_code)
-                    v.recommend_by=d.email
+                    d=CasignUp.objects.get(link="http://127.0.0.1:8000/prsignup/"+ref_code)
                 except:
-                    pass
-                v.name = Name
-                v.email = Email
-                v.password = Password
+                    d=PrsignUp.objects.get(link="http://127.0.0.1:8000/prsignup/"+ref_code)
+                print(d.id)
+                v.recommend_by=d.email
                 v.save()
+            # --------------------------------------------------------------------------------
+                q1 = PrsignUp.objects.filter(recommend_by = d.email)
+                d.totalNoOfReferrals = len(q1)     
+                d.save()
+            # --------------------------------------------------------------------------------
                 return redirect('PRLOGIN')
             else:
                 msg = 'Enter Same Password'
-            return render(self , 'prsignup.html',{'msg':msg})   
+                return render(self , 'prsignup.html',{'msg':msg},{'ref_code':ref_code})     
+        except:
+            msg = 'Invalid Email Address'
+            return render(self , 'prsignup.html',{'msg':msg}) 
     return render(self,'prsignup.html')
 
 # promoter login
@@ -73,55 +171,159 @@ def prlogin(self):
     return render(self,'prlogin.html')    
 
 # ----------------------------------------------------------------------------------------------------------
+def paidBySir(request):        
+    caToBePaid = CasignUp.objects.filter(pendingAmount__gte= 1)
+    for i in caToBePaid:
+        pass
+        # oo = Offerings.objects.filter(CA = i).update(isPaymentGivenBySir = True)
+        # CasignUp.objects.filter(email = i.email).update(totalAmount = i.pendingAmount)
+        # CasignUp.objects.filter(email = i.email).update(pendingAmount = 0)
+    return HttpResponse("Paid Successfully")
+    # return render(request, 'paidBySir.html', {'allCA':allCA})
+
+# ---------------------------------------------------------------------------------------
+def newMonth(request):
+    day = datetime.now().day
+    current_date = datetime.today().strftime('%Y-%m-%d')
+    allnameMsg = CasignUp.objects.all()
+    for i in allnameMsg:
+        # nameMsg = CasignUp.objects.filter(email = request.session['email'])
+        offering = Offerings.objects.filter(id = i.id).last()
+        print("**************",offering,"****************")
+        # offering = Offerings.objects.last()
+        if ((day == 29) and (offering.isMonthCompleted == False)):
+    # -------------------------------------------------------------------------
+            # if offering.isMonthCompleted == False:
+            print(f"Today is 1st date of month")
+            CasignUp.objects.filter(id = i.id).update(pendingAmount = offering.monthlyAmount)   
+            print("06") 
+            Offerings.objects.filter(id = i.id).update(isMonthCompleted = True)
+            print("07")
+            # Offerings.objects.create(CA = nameMsg[0])
+            data=CasignUp.objects.get(id = i.id)
+            Offerings.objects.create(CA = data, objectCreatedDate = current_date)
+            print(f"{i.id} is successfully done-------------------------")
+# -------------------------------------------------------------------------------------
+        else:
+            print("Today is not 29")
+    #     # return HttpResponse("Today is not 29------------")
+    # print("Today is not 29------------")
+# -------------------------------------------------------------------------------------
+day = datetime.now().day
+if day == 29:
+    print("Today is 29")
+    newMonth(request)
+# ----------------------------------------------------------------------------------------------------------
+
+# import schedule
+# import time
+# schedule.every().hour.do(newMonth)
+# -------------------------------------------------------------------------------------
+
+def amountCalculation(request, id, prid):
+    print("redirected to the amount calculation function")
+    nameMsg = CasignUp.objects.get(id = id) 
+    offering = Offerings.objects.filter(CA = nameMsg).last()
+# -------------------------------------------------------------------------
+    amount = 0
+    nameMsg = CasignUp.objects.get(id = id)
+    print(nameMsg.email,"100")
+    Month_Amount = 0
+    print("steps 00")
+    Month_Amount += ((10000*nameMsg.percentage)/100)
+    print("steps 01")
+    amount = offering.monthlyAmount
+    amount += Month_Amount
+    offering.monthlyAmount = amount
+    offering.save()
+
+    # pamount = CasignUp.objects.filter(email = nameMsg.email)
+    # pamount = pamount[0].pendingAmount + Month_Amount
+    # CasignUp.objects.filter(email = nameMsg.email).update(pendingAmount = pamount)
+    return redirect('PRDASHBOARD')
+
+# ----------------------------------------------------------------------------------------------------------
 # dashboard for promoter    
 def PRdashboard(request):
     if 'email' in request.session:
         print("Inside promoter dashboard")
         z = ''
         msg = ''
-        main_key = PrsignUp.objects.get(email = request.session['email'])  
-        all_comp=CompanyDetails.objects.filter(owner= PrsignUp.objects.get(email = request.session['email']))
-        
-# --------------------------------------------------------------------------------------------------------------------------------
+        nameMsg = PrsignUp.objects.filter(email = request.session['email'])  
+        print(nameMsg)
+        obj=PrsignUp.objects.filter(recommend_by=nameMsg[0].email)
+# ----------------------------------------------------------------------------------------------------
+        due_id = PrsignUp.objects.get(id=nameMsg[0].id)
         newdate = datetime.today().strftime('%Y-%m-%d')
-        if newdate >= str(main_key.payment_due_date):
+        if newdate >= str(due_id.payment_due_date):
             z = 'Please pay the payment'
         else:
-            z = f'You can use it till {main_key.payment_due_date}'
-# --------------------------------------------------------------------------------------------------------------------------------
+            z = f'You can use it till {due_id.payment_due_date}'
+# ----------------------------------------------------------------------------------------------------
         if request.POST:
-            rec_obj = ''
-            if main_key.ispaid == False:
-# --------------------------------------------------------------------------------------------------------------------------------
+            if nameMsg[0].ispaid == False:
+# ----------------------------------------------------------------------------------------------------
+                rec_obj = nameMsg[0].recommend_by
                 try:
-                    rec_obj = main_key.recommend_by
-                    rec_obj = PrsignUp.objects.get(email = rec_obj)
-                    total_referrals = rec_obj.totalNoOfReferrals
-                    # PrsignUp.objects.filter(email = rec_obj).update(totalNoOfReferrals = total_referrals +1)
-                    given_date = rec_obj.payment_due_date
-                    PrsignUp.objects.filter(email = rec_obj).update(payment_due_date = given_date + timedelta(days=30))
-                    msg = 'Paid Successfully'
-                    print(msg)
+                    print("-----------This is the CA's block----------")
+                    rec_obj = CasignUp.objects.get(email = rec_obj)
+                    print("try block")
+                    if rec_obj:
+                        total_referrals = rec_obj.totalNoOfReferrals
+                        # CasignUp.objects.filter(email = rec_obj).update(totalNoOfReferrals = total_referrals +1)
+                        PrsignUp.objects.filter(email = request.session['email']).update(ispaid = True)
+                        msg = 'Paid Successfully'
+                        print(msg)
+                        return redirect('AMOUNTCALCULATION', rec_obj.id, nameMsg[0].email)
                 except:
-                    pass
-                user_given_date = main_key.payment_due_date
-                if not main_key.ref_code:
-                    PrsignUp.objects.filter(email = request.session['email']).update(ref_code = genrated_ref_code())
-                PrsignUp.objects.filter(email = request.session['email']).update(ispaid = True, payment_due_date = user_given_date + timedelta(days=365))
-# --------------------------------------------------------------------------------------------------------------------------------
+                    print("-----------This is the user's block----------")
+                    rec_obj = PrsignUp.objects.get(email = rec_obj)
+                    print("except block")
+                    if rec_obj:
+                        total_referrals = rec_obj.totalNoOfReferrals
+                        # PrsignUp.objects.filter(email = rec_obj).update(totalNoOfReferrals = total_referrals +1)
+                        PrsignUp.objects.filter(email = request.session['email']).update(ispaid = True)
+                        given_date = rec_obj.payment_due_date
+                        PrsignUp.objects.filter(email = rec_obj).update(payment_due_date = given_date + timedelta(days=30))
+                        msg = 'Paid Successfully'
+                        print(msg)
+                print(nameMsg[0], "This is the logged in user")
+                print(rec_obj, "This is the recommended user")
+                PrsignUp.objects.filter(email = request.session['email']).update(payment_due_date = given_date + timedelta(days=365))
+# ----------------------------------------------------------------------------------------------------
             else:
                 msg = 'You have already paid'
                 print(msg)
-                return render(request, 'prdashboard.html', {'all_comp': all_comp, 'key':main_key, 'time' : z , 'msg' : msg})
+                return render(request, 'prdashboard.html', {'key':nameMsg[0],'obj':obj,'len':len(obj), 'time' : z , 'msg' : msg})
         # ------------------------------------------------------------------------------------
-        return render(request, 'prdashboard.html', {'all_comp': all_comp, 'main_key':main_key, 'time' : z , 'msg' : msg})
+        return render(request, 'prdashboard.html', {'key':nameMsg[0],'obj':obj,'len':len(obj), 'time' : z , 'msg' : msg})
     return redirect('PRLOGIN')
+
+# ca logout
+def userLogOut(request):
+    del request.session['email']
+    print('User logged out')
+    return redirect('CALOGIN')
 
 # pr logout
 def prLogOut(request):
     del request.session['email']
     print('User logged out')
     return redirect('PRLOGIN')    
+
+# ca timeout
+def timeout1(request):
+    if 'email' in request.session:
+        v=CasignUp.objects.get(email=request.session['email'])
+        due_id = CasignUp.objects.get(id=v.id)
+        newdate = datetime.today().strftime('%Y-%m-%d')
+        print("This is new date", newdate)
+        print("This is due date",str(due_id.payment_due_date))
+        if newdate >= str(due_id.payment_due_date):
+            return HttpResponse('Please pay the payment')
+        else:
+            return HttpResponse(f'You can use it till {due_id.payment_due_date}')
+    return redirect('CALOGIN')
 
 # pr timeout
 def PRtimeout(request):
@@ -141,29 +343,34 @@ def PRtimeout(request):
     return redirect('PRLOGIN')
 
 # Dashboard for main Host
-# def MAINDASH(request):
-#     li = []
-#     caobj =  CasignUp.objects.all()
-#     probj =  PrsignUp.objects.all()
-#     for i in caobj:
-#         caRefCount = PrsignUp.objects.filter(recommend_by = i.email)
-#         li.append(len(caRefCount))
-#     link  = 'http://127.0.0.1:8000/casignup/j75mnhd67v4m18r'    
-#     context = {
-#         'caobj': caobj,
-#         'probj': probj,        
-#         'calen': len(caobj),
-#         'prlen': len(probj),
-#         'link' : link,
-#         'li' : li,
-#     }
-#     if request.POST:
-#         ca_id = request.POST['ca_id']
-#         ca_ins = CasignUp.objects.get(email = ca_id)
+def MAINDASH(request):
+    li = []
+    caobj =  CasignUp.objects.all()
+    probj =  PrsignUp.objects.all()
+    for i in caobj:
+        caRefCount = PrsignUp.objects.filter(recommend_by = i.email)
+        li.append(len(caRefCount))
+    link  = 'http://127.0.0.1:8000/casignup/j75mnhd67v4m18r'    
+    context = {
+        'caobj': caobj,
+        'probj': probj,        
+        'calen': len(caobj),
+        'prlen': len(probj),
+        'link' : link,
+        'li' : li,
+    }
+    # obj = CasignUp.objects.get(email = caobj[0].email)
+    # print(obj)
+    # print(obj.name)
+    # print(obj.email)
 
-#         total_amount = ca_ins.totalAmount
-#         total_amount += ca_ins.pendingAmount
-#         ca_ins = CasignUp.objects.filter(email = ca_id).update(totalAmount = total_amount, pendingAmount = 0)
-#         print("Paid to CA Successfully")
-#     return render(request, 'maindash.html', context)
+    if request.POST:
+        ca_id = request.POST['ca_id']
+        ca_ins = CasignUp.objects.get(email = ca_id)
+
+        total_amount = ca_ins.totalAmount
+        total_amount += ca_ins.pendingAmount
+        ca_ins = CasignUp.objects.filter(email = ca_id).update(totalAmount = total_amount, pendingAmount = 0)
+        print("Paid to CA Successfully")
+    return render(request, 'maindash.html', context)
 

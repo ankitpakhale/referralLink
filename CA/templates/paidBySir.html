@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Promoter Main dashboard</title>
-
+    <title>Payment Page</title>
 
     <style>
         :root {
@@ -50,6 +49,13 @@
             font-family: 'Ubuntu', sans-serif;
             font-weight: bold;
             font-size: 22px;
+        }
+        .sign1 {
+            color: #0F0C6E;
+            font-family: 'Ubuntu', sans-serif;
+            font-weight: 500;
+            padding: 5px 0;
+            font-size: 16px;
         }
 
         a {
@@ -117,91 +123,32 @@
 </head>
 
 <body>
-
     <div class="container">
-        <div class="heading">Promoter Dashboard</div>
-        {% if key %}
-
+        <div class="heading">Payment Page</div>
         <div class="card">
             <div class="spacing">
                 <div class="name">Welcome {{key.name}}</div>
-
                 <div class="logout">
-                    <a href="{% url 'PRLOGOUT' %}">Logout</a>
+                    <a href="{% url 'CALOGOUT' %}">Logout</a>
                 </div>
             </div>
         </div>
 
+        {% for i in allCA %}
         <div class="card">
-            <div class="sign">
-                This is your referal link
-            </div>
-            <div class="row">
-                <h4>
-                    {{key.link}}
-                </h4>
-                <input type="text" value={{key.link}} id="myInput" style="display: none;">
-                <div class="tooltip">
-                    <button class="submit" onclick="myFunction()" onmouseout="outFunc()">Copy link</button>
-                </div>
-            </div>
+            <div class = "sign1">Name: {{i.name}}</div>
+            <div class = "sign1">Total Referrals: {{i.totalNoOfReferrals}}</div>
+            <div class = "sign1" style="color: #ff0000;">Pending Amount: {{i.pendingAmount}}</div>
+            <div class = "sign1" style="color: #007000;">Total Amount: {{i.totalAmount}}</div>
         </div>
-        <div class="card">
-            <h3>
-                {{time}} TIMEOUT
-            </h3>
-        </div>
+        {% endfor %}
+    </div>
 
-        <div class="card">
-            <div class="sign">Payment for software</div>
-            <form method="POST">
-                {% csrf_token %}
-                <h3>
-                    <input type="submit" class="submit" value="Pay">
-                </h3>
-            </form>
-          
-        </div>
+    <!-- PRINTING BACKEND MESSAGES -->
+    {% if msg %}
+    <script>alert('{{msg}}')</script>
+    {% endif %}
 
-
-        <div class="card">
-            <div class="sign">
-                Your Total referals
-            </div>
-            <h3> Total Number of Referals = {{len}}</h3>
-            {% for i in obj %}
-            <h4>
-                {{i}}
-            </h4>
-            {% endfor %}
-        </div>
-
-        {% else %}
-        <a href="{% url 'PRLOGIN' %}" class="nav-item nav-link">
-            <i class="fas fa-sign-in-alt" style="font-size:14px; float: left; display:inline; padding: 5px 3px;">
-            </i> Login
-        </a>
-        {% endif %}
-
-        <script>
-            function myFunction() {
-                var copyText = document.getElementById("myInput");
-                copyText.select();
-                copyText.setSelectionRange(0, 99999);
-                navigator.clipboard.writeText(copyText.value);
-
-                var tooltip = document.getElementById("myTooltip");
-                tooltip.innerHTML = "Copied: " + copyText.value;
-            }
-
-            function outFunc() {
-                var tooltip = document.getElementById("myTooltip");
-                tooltip.innerHTML = "Copy to clipboard";
-            }
-        </script>
-        {% if msg %}
-        <script>alert('{{msg}}')</script>
-        {% endif %}
 </body>
 
 </html>
