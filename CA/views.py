@@ -10,6 +10,17 @@ def genrated_ref_code():
     code = str(''.join(random.choices(string.ascii_uppercase + string.digits, k = 12)))
     return code
 
+def make_comp(request):
+    if 'email' in request.session:
+        if request.POST:
+            comp = CompanyDetails(
+            owner= PrsignUp.objects.get(email= request.session['email']),
+            name = request.POST.get('comp_name'))
+            comp.save()
+        return redirect('PRDASHBOARD')
+    return redirect('PRLOGIN')
+
+
 # promoter signup
 def prSignupView(self):
     new_code = ''
@@ -28,25 +39,18 @@ def prSignupView(self):
             if ConfirmPassword == Password:
                 v = PrsignUp()
                 try:
-                    d=PrsignUp.objects.get(ref_code= ref_code)
+                    d= PrsignUp.objects.get(ref_code= ref_code)
                     v.recommend_by=d.email
-                    print(d.id)
                 except:
                     pass
                 v.name = Name
                 v.email = Email
                 v.password = Password
                 v.save()
-                try:
-                    q1 = PrsignUp.objects.filter(recommend_by = d.email)
-                    d.totalNoOfReferrals = len(q1)     
-                    d.save()
-                except:
-                    pass
                 return redirect('PRLOGIN')
             else:
                 msg = 'Enter Same Password'
-            return render(self , 'prsignup.html',{'msg':msg},{'ref_code':ref_code})   
+            return render(self , 'prsignup.html',{'msg':msg})   
     return render(self,'prsignup.html')
 
 # promoter login
@@ -75,43 +79,42 @@ def PRdashboard(request):
         print("Inside promoter dashboard")
         z = ''
         msg = ''
-        nameMsg = PrsignUp.objects.filter(email = request.session['email'])  
-        print(nameMsg)
-        obj=PrsignUp.objects.filter(recommend_by=nameMsg[0].email)
-# ----------------------------------------------------------------------------------------------------
-        due_id = PrsignUp.objects.get(id=nameMsg[0].id)
+        main_key = PrsignUp.objects.get(email = request.session['email'])  
+        all_comp=CompanyDetails.objects.filter(owner= PrsignUp.objects.get(email = request.session['email']))
+        
+# --------------------------------------------------------------------------------------------------------------------------------
         newdate = datetime.today().strftime('%Y-%m-%d')
-        if newdate >= str(due_id.payment_due_date):
+        if newdate >= str(main_key.payment_due_date):
             z = 'Please pay the payment'
         else:
-            z = f'You can use it till {due_id.payment_due_date}'
-# ----------------------------------------------------------------------------------------------------
+            z = f'You can use it till {main_key.payment_due_date}'
+# --------------------------------------------------------------------------------------------------------------------------------
         if request.POST:
-            if nameMsg[0].ispaid == False:
-# ----------------------------------------------------------------------------------------------------
-                rec_obj = nameMsg[0].recommend_by
-            
-                print("-----------This is the user's block----------")
-                rec_obj = PrsignUp.objects.get(email = rec_obj)
-                print("except block")
-                if rec_obj:
+            rec_obj = ''
+            if main_key.ispaid == False:
+# --------------------------------------------------------------------------------------------------------------------------------
+                try:
+                    rec_obj = main_key.recommend_by
+                    rec_obj = PrsignUp.objects.get(email = rec_obj)
                     total_referrals = rec_obj.totalNoOfReferrals
                     # PrsignUp.objects.filter(email = rec_obj).update(totalNoOfReferrals = total_referrals +1)
-                    PrsignUp.objects.filter(email = request.session['email']).update(ispaid = True)
                     given_date = rec_obj.payment_due_date
                     PrsignUp.objects.filter(email = rec_obj).update(payment_due_date = given_date + timedelta(days=30))
                     msg = 'Paid Successfully'
                     print(msg)
-                print(nameMsg[0], "This is the logged in user")
-                print(rec_obj, "This is the recommended user")
-                PrsignUp.objects.filter(email = request.session['email']).update(payment_due_date = given_date + timedelta(days=365))
-# ----------------------------------------------------------------------------------------------------
+                except:
+                    pass
+                user_given_date = main_key.payment_due_date
+                if not main_key.ref_code:
+                    PrsignUp.objects.filter(email = request.session['email']).update(ref_code = genrated_ref_code())
+                PrsignUp.objects.filter(email = request.session['email']).update(ispaid = True, payment_due_date = user_given_date + timedelta(days=365))
+# --------------------------------------------------------------------------------------------------------------------------------
             else:
                 msg = 'You have already paid'
                 print(msg)
-                return render(request, 'prdashboard.html', {'key':nameMsg[0],'obj':obj,'len':len(obj), 'time' : z , 'msg' : msg})
+                return render(request, 'prdashboard.html', {'all_comp': all_comp, 'key':main_key, 'time' : z , 'msg' : msg})
         # ------------------------------------------------------------------------------------
-        return render(request, 'prdashboard.html', {'key':nameMsg[0],'obj':obj,'len':len(obj), 'time' : z , 'msg' : msg})
+        return render(request, 'prdashboard.html', {'all_comp': all_comp, 'main_key':main_key, 'time' : z , 'msg' : msg})
     return redirect('PRLOGIN')
 
 # pr logout

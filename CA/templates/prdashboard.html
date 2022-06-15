@@ -6,8 +6,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Promoter Main dashboard</title>
-
-
     <style>
         :root {
             --dark: #0F0C6E;
@@ -120,11 +118,11 @@
 
     <div class="container">
         <div class="heading">Promoter Dashboard</div>
-        {% if key %}
+        {% if main_key %}
 
         <div class="card">
             <div class="spacing">
-                <div class="name">Welcome {{key.name}}</div>
+                <div class="name">Welcome {{main_key.name}}</div>
 
                 <div class="logout">
                     <a href="{% url 'PRLOGOUT' %}">Logout</a>
@@ -132,20 +130,23 @@
             </div>
         </div>
 
+        {% if main_key.ref_code %}
         <div class="card">
             <div class="sign">
-                This is your referal link
+                This is your referal code
             </div>
             <div class="row">
                 <h4>
-                    {{key.link}}
+                    {{main_key.ref_code}}
                 </h4>
-                <input type="text" value={{key.link}} id="myInput" style="display: none;">
+                <input type="text" value={{main_key.ref_code}} id="myInput" style="display: none;">
                 <div class="tooltip">
                     <button class="submit" onclick="myFunction()" onmouseout="outFunc()">Copy link</button>
                 </div>
             </div>
         </div>
+        {% endif %}
+
         <div class="card">
             <h3>
                 {{time}} TIMEOUT
@@ -160,21 +161,43 @@
                     <input type="submit" class="submit" value="Pay">
                 </h3>
             </form>
-          
+
         </div>
 
-
+        {% if main_key.ref_code %}
         <div class="card">
             <div class="sign">
                 Your Total referals
             </div>
-            <h3> Total Number of Referals = {{len}}</h3>
+            <h3> Total Number of Referals = {{main_key.totalNoOfReferrals}}</h3>
             {% for i in obj %}
             <h4>
                 {{i}}
             </h4>
             {% endfor %}
         </div>
+        {% endif %}
+
+        {% if main_key.ispaid == True %}
+        <div class="card">
+            <form action="{% url 'make_comp' %}" method="POST">
+                {% csrf_token %}
+                <input type="text" name="comp_name" placeholder="Your Company name">
+                <input type="submit" value="Submit">
+            </form>
+            {% if all_comp %}
+            {% for i in all_comp %}
+            <div class="card">
+                {{ i.name }}
+                |
+                {{ i.comp_start_date }}
+                |
+                {{ i.comp_due_date }}
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+        {% endif %}
 
         {% else %}
         <a href="{% url 'PRLOGIN' %}" class="nav-item nav-link">
@@ -182,7 +205,6 @@
             </i> Login
         </a>
         {% endif %}
-
         <script>
             function myFunction() {
                 var copyText = document.getElementById("myInput");
@@ -193,7 +215,6 @@
                 var tooltip = document.getElementById("myTooltip");
                 tooltip.innerHTML = "Copied: " + copyText.value;
             }
-
             function outFunc() {
                 var tooltip = document.getElementById("myTooltip");
                 tooltip.innerHTML = "Copy to clipboard";

@@ -7,8 +7,8 @@ class PrsignUp(models.Model):
     name = models.CharField(max_length=30, default='')
     email = models.EmailField(default='')
     password = models.CharField(default='', max_length=15)
-    ref_code=models.CharField(max_length=55,default='')
-    recommend_by=models.CharField(max_length=30,default='',blank=False)
+    ref_code=models.CharField(max_length=55,blank=True)
+    recommend_by=models.CharField(max_length=30,default='',blank=True)
     joiningDate = models.DateField(default=timezone.now, null=True, blank=True)    
     payment_due_date = models.DateField(default=datetime.now()+timedelta(days=15))
     ispaid = models.BooleanField(default=False)
@@ -18,6 +18,8 @@ class PrsignUp(models.Model):
 
 class CompanyDetails(models.Model):
     owner = models.ForeignKey(PrsignUp, on_delete=models.CASCADE)
-    name = models.CharField(max_length=30, default='')
+    name = models.CharField(max_length=30,blank=True, null=True)
     comp_start_date = models.DateField(default=timezone.now, null=True, blank=True)
-    comp_due_date = models.DateField(default=datetime.now()+timedelta(days=15))
+    comp_due_date = models.DateField(default=datetime.now()+timedelta(days=15), blank=True)
+    def __str__(self):
+        return self.name
