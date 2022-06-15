@@ -90,49 +90,34 @@
 
   <!-- ------------------------------------------------------------------------------------------ -->
   <div class="container" style="height: 63vh;">
-    <div style="
-    border-radius: 4px;
-    box-shadow: rgb(50 50 93 / 25%) 0px 2px 5px -1px, rgb(0 0 0 / 30%) 0px 1px 3px -1px;
-    margin: 3rem 0;
-    padding: 10px;
-      ">
+    <div>
       <div class="sign" style="padding: 0.5em; font-size: 2em; font-weight: bold;">
         This is your referal link
       </div>
       <div class="row">
-        <h4 style="padding: 0.5em; font-size: 1em; margin: 0 0 0 20px; color: #00b715;">
+        <h4 style="padding: 0.5em; font-size: 1em; margin: 10px 0 0 20px;">
           {{key.link}}
         </h4>
         <input type="text" value={{key.link}} id="myInput" style="display: none;">
-        <div class="tooltip">
-          <button style="color: #000;" class="submit" onclick="myFunction()" onmouseout="outFunc()">Copy link</button>
+        <div class="tooltip" style="border: 2px solid #000;">
+          <button class="submit" onclick="myFunction()" onmouseout="outFunc()">Copy link</button>
         </div>
       </div>
     </div>
 
-    <div style="
-    font-size: 1em; 
-    
-    box-shadow: rgb(50 50 93 / 25%) 0px 2px 5px -1px, rgb(0 0 0 / 30%) 0px 1px 3px -1px;
-    margin: 3rem 0;
-    padding: 20px;
-    ">
+    <div style="padding: 0.5em; font-size: 1em; margin-top: 20px">
       <h3>
         {{time}}
       </h3>
     </div>
 
-    <div style="
-    box-shadow: rgb(50 50 93 / 25%) 0px 2px 5px -1px, rgb(0 0 0 / 30%) 0px 1px 3px -1px;
-    margin: 3rem 0;
-    padding: 20px;
-    ">
-      <div style="font-size: 2em; font-weight: bold;">
+    <div style="padding: 0.5em;">
+      <div style="font-size: 2em; font-weight: bold; margin-top: 20px">
         Your Total referals
       </div>
-      <h5> Total Number of Referals = {{len}}</h5>
+      <h3> Total Number of Referals = {{len}}</h3>
       {% for i in obj %}
-      <h4 style="font-size: 1.25rem; margin-top: 20px">
+      <h4 style="font-size: 1em; margin-top: 20px">
         {{i}}
       </h4>
       {% endfor %}
