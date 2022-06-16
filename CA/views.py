@@ -5,7 +5,6 @@ from .models import *
 from datetime import datetime
 import random, string
 
-
 def genrated_ref_code():
     code= str(''.join(random.choices(string.ascii_uppercase + string.digits, k= 12)))
     return code
