@@ -111,6 +111,15 @@
             transition: all 0.5s cubic-bezier(0.87, 0.29, 0, 0.68);
             background: linear-gradient(to right, #3a0942, #0F0C6E, #3a0942);
         }
+        table{
+            text-align: center;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        td{
+            margin: 9px 18px;
+            padding: 13px;
+        }
     </style>
 </head>
 
@@ -155,13 +164,12 @@
 
         <div class="card">
             <div class="sign">Payment for software</div>
-            <form method="POST">
+            <form method="POST" action="{% url 'payment' %}">
                 {% csrf_token %}
                 <h3>
                     <input type="submit" class="submit" value="Pay">
                 </h3>
             </form>
-
         </div>
 
         {% if main_key.ref_code %}
@@ -182,19 +190,31 @@
         <div class="card">
             <form action="{% url 'make_comp' %}" method="POST">
                 {% csrf_token %}
-                <input type="text" name="comp_name" placeholder="Your Company name">
+                <input type="text" name="comp_name" placeholder="Add Company">
                 <input type="submit" value="Submit">
             </form>
             {% if all_comp %}
-            {% for i in all_comp %}
-            <div class="card">
-                {{ i.name }}
-                |
-                {{ i.comp_start_date }}
-                |
-                {{ i.comp_due_date }}
-            </div>
-            {% endfor %}
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                    </tr>
+                    {% for i in all_comp %}
+                    <tr>
+                        <td>
+                            {{ i.name }}
+                        </td>
+                        <td>
+                            {{ i.comp_start_date }}
+                        </td>
+                        <td>
+                            {{ i.comp_due_date }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            
             {% endif %}
         </div>
         {% endif %}

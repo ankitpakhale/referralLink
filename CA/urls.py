@@ -9,6 +9,7 @@ urlpatterns = [
     path('prlogout/',views.prLogOut,name='PRLOGOUT'),
     path('', views.PRdashboard, name='PRDASHBOARD'),
     path('make_comp/', views.make_comp, name='make_comp'),
+    path('payment/', views.payment, name='payment'),
 
     
 ]
