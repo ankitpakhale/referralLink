@@ -95,15 +95,18 @@ def payment(request):
                     rec_obj= PrsignUp.objects.get(email= main_key.recommend_by)
                     print(rec_obj)
                     print(rec_obj.totalNoOfReferrals)
-
-                    if rec_obj.totalNoOfReferrals <= 12:
-                        print('in fi')
-                        extend= CompanyDetails.objects.filter(owner= rec_obj)[0]
-                        extend.comp_due_date= extend.comp_due_date + timedelta(days=30)
-                        extend.save()
-                    else:
-                        msg = "You can get maximum benefits of 12 referrals only"
-                        print(msg)
+                    try:
+                        if rec_obj.totalNoOfReferrals <= 12:
+                            print('in fi')
+                            extend= CompanyDetails.objects.filter(owner= rec_obj)[0]
+                            extend.comp_due_date= extend.comp_due_date + timedelta(days=30)
+                            extend.save()
+                        else:
+                            msg = "You can get maximum benefits of 12 referrals only"
+                            print(msg)
+                    except:
+                        print('**********************************')
+                        pass
 
                     PrsignUp.objects.filter(email= rec_obj).update(totalNoOfReferrals= rec_obj.totalNoOfReferrals + 1)
                     msg= 'Paid Successfully'
@@ -137,31 +140,8 @@ def PRdashboard(request):
         else:
             z= f'You can use it till {main_key.payment_due_date}'
 # --------------------------------------------------------------------------------------------------------------------------------
-#         if request.POST:
-#             rec_obj= ''
-#             if main_key.ispaid== False:
-# # --------------------------------------------------------------------------------------------------------------------------------
-#                 try:
-#                     rec_obj= main_key.recommend_by
-#                     rec_obj= PrsignUp.objects.get(email= rec_obj)
-#                     total_referrals= rec_obj.totalNoOfReferrals
-#                     # PrsignUp.objects.filter(email= rec_obj).update(totalNoOfReferrals= total_referrals +1)
-#                     given_date= rec_obj.payment_due_date
-#                     PrsignUp.objects.filter(email= rec_obj).update(payment_due_date= given_date + timedelta(days=30))
-#                     msg= 'Paid Successfully'
-#                     print(msg)
-#                 except:
-#                     pass
-#                 user_given_date= main_key.payment_due_date
-#                 if not main_key.ref_code:
-#                     PrsignUp.objects.filter(email= request.session['email']).update(ref_code= genrated_ref_code())
-#                 PrsignUp.objects.filter(email= request.session['email']).update(ispaid= True, payment_due_date= user_given_date + timedelta(days=365))
-# # --------------------------------------------------------------------------------------------------------------------------------
-#             else:
-#                 msg= 'You have already paid'
-#                 print(msg)
-#                 return render(request, 'prdashboard.html', {'all_comp': all_comp, 'key':main_key, 'time' : z , 'msg' : msg})
-        # ------------------------------------------------------------------------------------
+        
+# ------------------------------------------------------------------------------------------------------------------------------
         return render(request, 'prdashboard.html', {'all_comp': all_comp, 'main_key':main_key, 'time' : z , 'msg' : msg})
     return redirect('PRLOGIN')
 

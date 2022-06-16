@@ -15,7 +15,8 @@
 
         body {
             font-family: 'Ubuntu', sans-serif;
-            background-color: #fde6e6;
+            /* background-color: #fde6e6; */
+            background-color: #e1e1ff;
         }
 
         .container {
@@ -26,12 +27,13 @@
 
         .card {
             width: 90%;
+            /* background-color: #fffefe; */
             background-color: #fffefe;
             height: auto;
             margin: 1.8rem auto;
             padding: 1rem 2rem;
             border-radius: 7px;
-            box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+            box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
         }
 
         .heading {
@@ -129,95 +131,94 @@
         <div class="heading">Promoter Dashboard</div>
         {% if main_key %}
 
-        <div class="card">
-            <div class="spacing">
-                <div class="name">Welcome {{main_key.name}}</div>
+            <div class="card">
+                <div class="spacing">
+                    <div class="name">Welcome {{main_key.name}}</div>
 
-                <div class="logout">
-                    <a href="{% url 'PRLOGOUT' %}">Logout</a>
+                    <div class="logout">
+                        <a href="{% url 'PRLOGOUT' %}">Logout</a>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        {% if main_key.ref_code %}
-        <div class="card">
-            <div class="sign">
-                This is your referal code
-            </div>
-            <div class="row">
-                <h4>
-                    {{main_key.ref_code}}
-                </h4>
-                <input type="text" value={{main_key.ref_code}} id="myInput" style="display: none;">
-                <div class="tooltip">
-                    <button class="submit" onclick="myFunction()" onmouseout="outFunc()">Copy link</button>
-                </div>
-            </div>
-        </div>
-        {% endif %}
-
-        <div class="card">
-            <h3>
-                {{time}} TIMEOUT
-            </h3>
-        </div>
-
-        <div class="card">
-            <div class="sign">Payment for software</div>
-            <form method="POST" action="{% url 'payment' %}">
-                {% csrf_token %}
-                <h3>
-                    <input type="submit" class="submit" value="Pay">
-                </h3>
-            </form>
-        </div>
-
-        {% if main_key.ref_code %}
-        <div class="card">
-            <div class="sign">
-                Your Total referals
-            </div>
-            <h3> Total Number of Referals = {{main_key.totalNoOfReferrals}}</h3>
-            {% for i in obj %}
-            <h4>
-                {{i}}
-            </h4>
-            {% endfor %}
-        </div>
-        {% endif %}
-
-        {% if main_key.ispaid == True %}
-        <div class="card">
-            <form action="{% url 'make_comp' %}" method="POST">
-                {% csrf_token %}
-                <input type="text" name="comp_name" placeholder="Add Company">
-                <input type="submit" value="Submit">
-            </form>
             {% if all_comp %}
-                <table>
-                    <tr>
-                        <th>Name</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                    </tr>
-                    {% for i in all_comp %}
-                    <tr>
-                        <td>
-                            {{ i.name }}
-                        </td>
-                        <td>
-                            {{ i.comp_start_date }}
-                        </td>
-                        <td>
-                            {{ i.comp_due_date }}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </table>
-            
+            <div class="card">
+                <div class="sign">
+                    This is your referral code
+                </div>
+                <div class="row">
+                    <h4>
+                        {{main_key.ref_code}}
+                    </h4>
+                    <input type="text" value={{main_key.ref_code}} id="myInput" style="display: none;">
+                    <div class="tooltip">
+                        <button class="submit" onclick="myFunction()" onmouseout="outFunc()">Copy referral Code</button>
+                    </div>
+                </div>
+            </div>
             {% endif %}
-        </div>
-        {% endif %}
+
+            <div class="card">
+                <h3>
+                    {{time}} TIMEOUT
+                </h3>
+            </div>
+
+            <div class="card">
+                <div class="sign">Payment for software</div>
+                <form method="POST" action="{% url 'payment' %}">
+                    {% csrf_token %}
+                    <h3>
+                        <input type="submit" class="submit" value="Pay">
+                    </h3>
+                </form>
+            </div>
+
+            {% if main_key.ref_code %}
+            <div class="card">
+                <div class="sign">
+                    Your Total referral
+                </div>
+                <h3> Total Number of referral = {{main_key.totalNoOfReferrals}}</h3>
+                {% for i in obj %}
+                <h4>
+                    {{i}}
+                </h4>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if main_key.ispaid == True %}
+            <div class="card">
+                <form action="{% url 'make_comp' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="text" name="comp_name" placeholder="Add Company">
+                    <input type="submit" value="Submit">
+                </form>
+                {% if all_comp %}
+                    <table>
+                        <tr>
+                            <th>Name</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                        </tr>
+                        {% for i in all_comp %}
+                        <tr>
+                            <td>
+                                {{ i.name }}
+                            </td>
+                            <td>
+                                {{ i.comp_start_date }}
+                            </td>
+                            <td>
+                                {{ i.comp_due_date }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
+            </div>
+            {% endif %}
 
         {% else %}
         <a href="{% url 'PRLOGIN' %}" class="nav-item nav-link">
