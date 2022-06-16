@@ -22,6 +22,7 @@ def make_comp(request):
 # promoter signup
 def prSignupView(self):
     d= ''
+    code = ''   
     if self.POST:
         Name= self.POST.get('name')
         Email= self.POST.get('email')
@@ -37,11 +38,20 @@ def prSignupView(self):
                 v= PrsignUp()
                 try:
                     d= PrsignUp.objects.get(ref_code= ref_code)
-                    v.recommend_by=d.email
+                    v.recommend_by= d.email
                 except:
                     pass
                 v.name= Name
-                v.email= Email
+                v.email= Email 
+                
+                while True:
+                    code = genrated_ref_code()
+                    try:
+                        PrsignUp.objects.get(ref_code= code)
+                    except:
+                        v.ref_code= code                
+                        break
+                
                 v.password= Password
                 v.save()
                 return redirect('PRLOGIN')
@@ -73,20 +83,6 @@ def prlogin(self):
 def payment(request):
     if 'email' in request.session:
         main_key= PrsignUp.objects.get(email= request.session['email'])
-        
-        # rec_obj= PrsignUp.objects.get(email= main_key.recommend_by)
-        # print(rec_obj)
-        # print(rec_obj.totalNoOfReferrals)
-        # print(type(rec_obj.totalNoOfReferrals))
-        # if rec_obj.totalNoOfReferrals <= 1:
-        #     print('in fi')
-        #     # extend= CompanyDetails.objects.filter(owner= rec_obj)[0]
-        #     # extend.comp_due_date= extend.comp_due_date + timedelta(days=30)
-        #     # extend.save()
-        # else:
-        #     msg = "You can get max benifts of 1 referrals only"
-        #     print(msg)
-
         if request.POST:
             if main_key.ispaid== False:
                 try:
@@ -114,8 +110,6 @@ def payment(request):
                     print("in except")
                     pass
                 user_given_date= main_key.payment_due_date
-                if not main_key.ref_code:
-                    PrsignUp.objects.filter(email= request.session['email']).update(ref_code= genrated_ref_code())
                 PrsignUp.objects.filter(email= request.session['email']).update(ispaid= True, payment_due_date= user_given_date + timedelta(days= 365))
                 return redirect('PRDASHBOARD')                
             else:
