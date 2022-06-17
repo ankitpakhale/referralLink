@@ -12,10 +12,16 @@ def genrated_ref_code():
 def make_comp(request):
     if 'email' in request.session:
         if request.POST:
-            comp= CompanyDetails(
-            owner= PrsignUp.objects.get(email= request.session['email']),
-            name= request.POST.get('comp_name'))
-            comp.save()
+            owner= PrsignUp.objects.get(email= request.session['email'])
+            name= request.POST.get('comp_name')
+            try:
+                CompanyDetails.objects.get(name= name)
+                return redirect('PRDASHBOARD')
+            except:
+                comp= CompanyDetails(
+                    name=name, owner=owner
+                )
+                comp.save()
         return redirect('PRDASHBOARD')
     return redirect('PRLOGIN')
 
@@ -126,15 +132,13 @@ def PRdashboard(request):
         msg= ''
         main_key= PrsignUp.objects.get(email= request.session['email'])  
         all_comp= CompanyDetails.objects.filter(owner= main_key)
-# --------------------------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
         newdate= datetime.today().strftime('%Y-%m-%d')
         if newdate >= str(main_key.payment_due_date):
             z= 'Please pay the payment'
         else:
             z= f'You can use it till {main_key.payment_due_date}'
-# --------------------------------------------------------------------------------------------------------------------------------
-        
-# ------------------------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
         return render(request, 'prdashboard.html', {'all_comp': all_comp, 'main_key':main_key, 'time' : z , 'msg' : msg})
     return redirect('PRLOGIN')
 
